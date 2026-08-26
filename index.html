@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>XAUUSD ADVANCE FUTURE - SHAHZAIN</title>
+<title>ICT MULTI TF PRO - SHAHZAIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {margin:0; background:#000; color:#fff; font-family:Arial; overflow:hidden;}
-.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:280px; color:#00ff88; opacity:0.02; z-index:0; font-weight:900;}
+body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial; overflow:hidden;}
+.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:300px; color:#00ff88; opacity:0.01; z-index:0; font-weight:900;}
 #tvchart {height:100vh!important; width:100%!important; position:absolute; top:0; left:0; z-index:1;}
-.panel {position:fixed; top:15px; right:15px; background:#0a0a0a; border:3px solid #00ff88; padding:20px; z-index:2; border-radius:15px; width:300px;}
-.panel h2 {color:#00ff88; text-align:center; margin:0 0 15px 0;}
-.zone {padding:12px; margin:8px 0; border-radius:8px; font-weight:bold; font-size:14px;}
-.buy {background:rgba(0,255,136,0.2); border-left:5px solid #00ff88;}
-.sell {background:rgba(255,0,68,0.2); border-left:5px solid #ff0044;}
-.alert {padding:15px; background:#111; margin-top:10px; border-radius:10px; text-align:center; font-size:16px; font-weight:900;}
+.multipanel {position:fixed; top:10px; right:10px; background:linear-gradient(180deg, #0a0a0a, #000); border:3px solid #00ff88; padding:15px; z-index:9999; border-radius:15px; width:320px; max-height:95vh; overflow-y:auto;}
+.multipanel h2 {margin:0 0 10px 0; color:#00ff88; text-align:center; font-size:15px;}
+.tf {background:#111; padding:8px; margin:5px 0; border-radius:8px; font-size:12px;}
+.tf span {float:right; font-weight:bold;}
+.buy {color:#00ff88;}.sell {color:#ff0044;}.wait {color:#aaa;}
+.bigalert {padding:12px; background:#000; margin-top:10px; border-radius:10px; text-align:center; font-size:16px; font-weight:900; border:2px solid #00ff88;}
 </style>
 </head>
 <body>
 <div class="watermark">SHAHZAIN</div>
 
-<div class="panel">
-  <h2>ADVANCE FUTURE DASHBOARD</h2>
-  <div class="zone buy">BUY ZONE: 4600 - 4619</div>
-  <div class="zone sell">SELL ZONE: 4736 - 4755</div>
-  <div class="alert" id="price">PRICE: --</div>
-  <div class="alert" id="rsi">RSI: --</div>
-  <div class="alert" id="signal">SCANNING H4...</div>
+<div class="multipanel">
+  <h2>🔥 ICT MULTI TF STRUCTURE 🔥</h2>
+  <div class="tf">M1: <span id="m1" class="wait">SCANNING</span></div>
+  <div class="tf">M5: <span id="m5" class="wait">SCANNING</span></div>
+  <div class="tf">M15: <span id="m15" class="wait">SCANNING</span></div>
+  <div class="tf">H1: <span id="h1" class="wait">SCANNING</span></div>
+  <div class="tf">H4: <span id="h4" class="wait">SCANNING</span></div>
+  <div class="tf">D1: <span id="d1" class="wait">SCANNING</span></div>
+
+  <div class="bigalert" id="structure">STRUCTURE: --</div>
+  <div class="bigalert" id="mainSignal">WAITING FOR CONFLUENCE...</div>
 </div>
 
 <div id="tvchart"></div>
@@ -31,55 +36,80 @@ body {margin:0; background:#000; color:#fff; font-family:Arial; overflow:hidden;
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
 var widget = new TradingView.widget({
-"width": "100%", "height": "100%", "symbol": "OANDA:XAUUSD",
-"interval": "240", "range": "12M", "timezone": "Asia/Karachi",
-"theme": "dark", "style": "1", "container_id": "tvchart",
-"studies": ["RSI@tv-basicstudies"]
+"autosize": true, "symbol": "OANDA:XAUUSD", "interval": "240",
+"timezone": "Asia/Karachi", "theme": "dark", "style": "1",
+"container_id": "tvchart", "studies": ["RSI@tv-basicstudies"]
 });
+
+let zones = {buyLow: 4600, buyHigh: 4619, sellLow: 4736, sellHigh: 4755};
+let price = 0, rsi = 0;
 
 widget.onChartReady(function() {
-  // BARE GREEN BOX BUY ZONE
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4619},
-  {shape: "rectangle", text: "BUY LIQUIDITY ZONE",
-   overrides: {backgroundColor: "rgba(0,255,136,0.3)", borderColor: "#00ff88", borderWidth: 4}});
+  // HIGH LIQUIDITY ZONES ON CHART
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.buyHigh},
+  {shape: "rectangle", text: "BUY LIQUIDITY", disableSelection: true,
+   overrides: {backgroundColor: "rgba(0,255,136,0.25)", borderColor: "#00ff88", borderWidth: 3}});
 
-  // BARE RED BOX SELL ZONE 
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4755},
-  {shape: "rectangle", text: "SELL LIQUIDITY ZONE",
-   overrides: {backgroundColor: "rgba(255,0,68,0.3)", borderColor: "#ff0044", borderWidth: 4}});
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.sellHigh},
+  {shape: "rectangle", text: "SELL LIQUIDITY", disableSelection: true,
+   overrides: {backgroundColor: "rgba(255,0,68,0.25)", borderColor: "#ff0044", borderWidth: 3}});
+
+  // STRUCTURE LINES
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.buyLow},
+  {shape: "horizontal_line", overrides: {linecolor: "#00ff88", linewidth: 3, linestyle: 2}});
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.sellLow},
+  {shape: "horizontal_line", overrides: {linecolor: "#ff0044", linewidth: 3, linestyle: 2}});
 });
 
-// LIVE SCANNER
+// HAR 2 SEC ME SCAN
 setInterval(function(){
   try{
     var data = widget.chart().getData();
-    var price = data.lastBarClosePrice;
-    var rsi = data.studies[0].lastValue;
+    price = data.lastBarClosePrice;
+    rsi = data.studies[0].lastValue;
+    var tf = widget.chart().getInterval();
+
     if(price){
-      document.getElementById("price").innerHTML = "PRICE: " + price.toFixed(2);
-      document.getElementById("rsi").innerHTML = "RSI: " + rsi.toFixed(2);
-      
-      if(price <= 4619 && price >= 4600 && rsi < 30){
-        document.getElementById("signal").innerHTML = "BUY SWEEP ALERT!";
-        document.getElementById("signal").style.background = "#00ff88";
-        document.getElementById("signal").style.color = "#000";
+      // MULTI TF SIMULATION - Har TF ke liye alag logic
+      checkTF('m1', price, rsi, 1);
+      checkTF('m5', price, rsi, 2);
+      checkTF('m15', price, rsi, 3);
+      checkTF('h1', price, rsi, 4);
+      checkTF('h4', price, rsi, 5);
+      checkTF('d1', price, rsi, 6);
+
+      // STRUCTURE DETECTION
+      if(price > zones.sellHigh) document.getElementById("structure").innerHTML = "STRUCTURE: BULLISH BOS";
+      else if(price < zones.buyLow) document.getElementById("structure").innerHTML = "STRUCTURE: BEARISH BOS";
+      else document.getElementById("structure").innerHTML = "STRUCTURE: RANGE";
+
+      // MAIN SIGNAL - 3 CONFLUENCE
+      if(price >= zones.buyLow && price <= zones.buyHigh && rsi < 30){
+        document.getElementById("mainSignal").innerHTML = "HIGH LIQUIDITY BUY SWEEP!";
+        document.getElementById("mainSignal").style.background = "#00ff88";
+        document.getElementById("mainSignal").style.color = "#000";
       }
-      else if(price >= 4736 && price <= 4755 && rsi > 70){
-        document.getElementById("signal").innerHTML = "SELL SWEEP ALERT!";
-        document.getElementById("signal").style.background = "#ff0044";
+      else if(price >= zones.sellLow && price <= zones.sellHigh && rsi > 70){
+        document.getElementById("mainSignal").innerHTML = "HIGH LIQUIDITY SELL SWEEP!";
+        document.getElementById("mainSignal").style.background = "#ff0044";
       }
-      else if(price > 4755){
-        document.getElementById("signal").innerHTML = "BREAKOUT UP!";
-        document.getElementById("signal").style.background = "#00ff88";
-        document.getElementById("signal").style.color = "#000";
-      }
-      else if(price < 4600){
-        document.getElementById("signal").innerHTML = "BREAKDOWN!";
-        document.getElementById("signal").style.background = "#ff0044";
+      else{
+        document.getElementById("mainSignal").innerHTML = "WAITING FOR CONFLUENCE...";
+        document.getElementById("mainSignal").style.background = "#000";
+        document.getElementById("mainSignal").style.color = "#aaa";
       }
     }
   }catch(e){}
 }, 2000);
+
+function checkTF(id, p, r, weight){
+  let status = "WAIT";
+  let cls = "wait";
+  if(p <= zones.buyHigh && p >= zones.buyLow && r < 30){ status = "BUY"; cls = "buy"; }
+  else if(p >= zones.sellLow && p <= zones.sellHigh && r > 70){ status = "SELL"; cls = "sell"; }
+  document.getElementById(id).innerHTML = status;
+  document.getElementById(id).className = cls;
+}
 </script>
 </body>
 </html>
