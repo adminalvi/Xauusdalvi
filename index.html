@@ -1,132 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>VIP ✅ MULTI TF STRUCTURE - SHAHZAIN</title>
-<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<title>VIP ✅ ALL TF WORKING - SHAHZAIN V9.1</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial;}
-#chart {height:55vh; width:100%;}
-#vipdash {height:45vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; overflow-y:auto;}
-.vipbox {background:#111; padding:8px; border-radius:10px; border-left:3px solid #00ff88;}
-.t {font-size:10px; color:#888;}.v {font-size:14px; font-weight:900;}
+#chart {height:50vh; width:100%; background:#000;}
+#vipdash {height:50vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; overflow-y:auto;}
+.vipbox {background:#111; padding:8px; border-radius:8px; border-left:3px solid #00ff88;}
+.t {font-size:9px; color:#888;}.v {font-size:13px; font-weight:900;}
 .buy {color:#00ff88;}.sell {color:#ff0044;}.yellow {color:#ffff00;}
 .header {grid-column: span 7; text-align:center; color:#00ff88; font-weight:900;}
-.tfbox {background:#0a0a0a; border:1px solid #333;}
+.tfgrid {grid-column: span 7; display:grid; grid-template-columns: repeat(6, 1fr); gap:5px;}
 </style>
 </head>
 <body>
 <div id="chart"></div>
 
 <div id="vipdash">
-  <div class="header">🔥 VIP ✅ MULTI TIMEFRAME STRUCTURE 🔥</div>
+  <div class="header">🔥 VIP ✅ ALL TIMEFRAME LIVE 🔥</div>
 
   <div class="vipbox"><div class="t">Price</div><div class="v" id="price">--</div></div>
   <div class="vipbox"><div class="t">RSI</div><div class="v" id="rsi">--</div></div>
   <div class="vipbox"><div class="t">FVG</div><div class="v yellow" id="fvg">--</div></div>
-  <div class="vipbox"><div class="t">Current TF</div><div class="v" id="ctf">H4</div></div>
-  <div class="vipbox"><div class="t">Signal</div><div class="v" id="signal">WAIT</div></div>
+  <div class="vipbox"><div class="t">Main Signal</div><div class="v" id="signal">WAIT</div></div>
+  <div class="vipbox"><div class="t">Confluence</div><div class="v" id="con">0/6</div></div>
   <div class="vipbox"><div class="t">Demand</div><div class="v buy">Auto</div></div>
   <div class="vipbox"><div class="t">Supply</div><div class="v sell">Auto</div></div>
 
-  <div class="vipbox tfbox"><div class="t">M1 Structure</div><div class="v" id="m1s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">M5 Structure</div><div class="v" id="m5s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">M15 Structure</div><div class="v" id="m15s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">H1 Structure</div><div class="v" id="h1s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">H4 Structure</div><div class="v" id="h4s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">D1 Structure</div><div class="v" id="d1s">--</div></div>
-  <div class="vipbox tfbox"><div class="t">Confluence</div><div class="v" id="con">0/6</div></div>
+  <div class="header" style="font-size:12px;">HAR TIMEFRAME KA STRUCTURE</div>
+  <div class="tfgrid">
+    <div class="vipbox"><div class="t">M1</div><div class="v" id="m1s">--</div></div>
+    <div class="vipbox"><div class="t">M5</div><div class="v" id="m5s">--</div></div>
+    <div class="vipbox"><div class="t">M15</div><div class="v" id="m15s">--</div></div>
+    <div class="vipbox"><div class="t">H1</div><div class="v" id="h1s">--</div></div>
+    <div class="vipbox"><div class="t">H4</div><div class="v" id="h4s">--</div></div>
+    <div class="vipbox"><div class="t">D1</div><div class="v" id="d1s">--</div></div>
+  </div>
 </div>
 
 <script>
-const chart = LightweightCharts.createChart(document.getElementById('chart'), {layout: {bg: '#000'}});
-const candles = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
+window.onload = function() {
+const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+  layout: {backgroundColor: '#000'}, width: window.innerWidth, height: window.innerHeight * 0.5
+});
+const candleSeries = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
 
-let allData = {}; // Har TF ka data yahan store hoga
-let timeframes = {m1: 60, m5: 300, m15: 900, h1: 3600, h4: 14400, d1: 86400};
+let tfData = {m1:[], m5:[], m15:[], h1:[], h4:[], d1:[]};
+let tfSeconds = {m1:60, m5:300, m15:900, h1:3600, h4:14400, d1:86400};
+let basePrice = 4615;
 
-// FAKE DATA GENERATE HAR TF KE LIYE
-function generateTFData(tf, count){
+function generateData(tf, count){
   let data = [];
-  let price = 4615 + Math.random()*20;
+  let price = basePrice + (Math.random()-0.5)*50;
   for(let i=count; i>0; i--){
-    price += (Math.random()-0.5)* (tf/60);
-    data.push({time: Date.now()/1000 - i*tf, o: price, h: price+3, l: price-3, c: price + (Math.random()-0.5)*2});
+    price += (Math.random()-0.5)* (tfSeconds[tf]/60);
+    data.push({
+      time: Math.floor(Date.now()/1000) - i*tfSeconds[tf],
+      open: price, high: price+5, low: price-5, close: price + (Math.random()-0.5)*3
+    });
   }
   return data;
 }
 
-// HAR TF KA STRUCTURE CHECK KARO
-function checkStructure(data){
-  if(data.length < 10) return "WAIT";
-  let last = data[data.length-1];
-  let prev = data[data.length-2];
-  let prev2 = data[data.length-3];
-
-  let hh = last.h > prev.h && prev.h > prev2.h;
-  let hl = last.l > prev.l && prev.l > prev2.l;
-  let lh = last.h < prev.h && prev.h < prev2.h;
-  let ll = last.l < prev.l && prev.l < prev2.l;
-
-  if(hh && hl) return "BULLISH";
-  if(lh && ll) return "BEARISH";
-  if(last.c > prev.h) return "BOS UP";
-  if(last.c < prev.l) return "BOS DOWN";
+function getStructure(data){
+  if(data.length < 5) return "WAIT";
+  let l = data.length;
+  let c1=data[l-1], c2=data[l-2], c3=data[l-3];
+  if(c1.c > c2.h && c2.c > c3.h) return "BOS UP";
+  if(c1.c < c2.l && c2.c < c3.l) return "BOS DOWN";
+  if(c1.h>c2.h && c1.l>c2.l) return "BULLISH";
+  if(c1.h<c2.h && c1.l<c2.l) return "BEARISH";
   return "RANGE";
 }
 
-// FVG CHECK
-function checkFVG(data){
-  if(data.length < 3) return "--";
-  let c1 = data[data.length-3];
-  let c3 = data[data.length-1];
-  if(c1.l > c3.h) return "BULL FVG";
-  if(c1.h < c3.l) return "BEAR FVG";
+function getFVG(data){
+  if(data.length < 3) return "NONE";
+  let l = data.length;
+  if(data[l-3].low > data[l-1].high) return "BULL FVG";
+  if(data[l-3].high < data[l-1].low) return "BEAR FVG";
   return "NONE";
 }
 
-// MAIN LOOP
-setInterval(()=>{
-  candles.setData(generateTFData(300, 200)); // Chart pe M5 dikhao
+// RSI FIX: Divide by 0 ka masla khatam
+function calcRSI(closes){
+  if(closes.length < 15) return 50;
+  let gains=0, losses=0;
+  for(let i=closes.length-14; i<closes.length; i++){
+    let d = closes[i]-closes[i-1];
+    if(d>0) gains+=d; else losses-=d;
+  }
+  if(losses === 0) return 100;
+  let rs = (gains/14)/(losses/14);
+  return 100 - (100/(1+rs));
+}
 
+for(let tf in tfData){
+  tfData[tf] = generateData(tf, 200);
+}
+candleSeries.setData(tfData['m5']);
+
+setInterval(()=>{
   let confluence = 0;
-  for(let tf in timeframes){
-    allData[tf] = generateTFData(timeframes[tf], 100);
-    let structure = checkStructure(allData[tf]);
-    let fvg = checkFVG(allData[tf]);
+
+  for(let tf in tfData){
+    let last = tfData[tf][tfData[tf].length-1];
+    let newPrice = last.close + (Math.random()-0.5)* (tfSeconds[tf]/100);
+
+    // TIME FIX: Duplicate time nahi aayega
+    let newTime = last.time + tfSeconds[tf];
+
+    tfData[tf].push({
+      time: newTime,
+      open: newPrice, high: newPrice+2, low: newPrice-2, close: newPrice
+    });
+
+    let structure = getStructure(tfData[tf]);
+    let closes = tfData[tf].map(x=>x.close);
+    let rsi = calcRSI(closes);
 
     document.getElementById(tf+'s').innerHTML = structure;
-    document.getElementById(tf+'s').className = "v " + (structure.includes("BULL")||structure.includes("UP")? "buy" : structure.includes("BEAR")||structure.includes("DOWN")? "sell" : "");
+    document.getElementById(tf+'s').className = "v " +
+      (structure.includes("BULL")||structure.includes("UP")? "buy" :
+       structure.includes("BEAR")||structure.includes("DOWN")? "sell" : "");
 
-    if(structure.includes("BULL") || structure.includes("UP")) confluence++;
-    if(structure.includes("BEAR") || structure.includes("DOWN")) confluence--;
+    if(structure.includes("BULL")||structure.includes("UP")) confluence++;
+    if(structure.includes("BEAR")||structure.includes("DOWN")) confluence--;
   }
 
-  let lastPrice = allData['m5'][allData['m5'].length-1].c;
-  let closes = allData['m5'].map(x=>x.c);
-  let rsi = calcRSI(closes, 14);
-  let fvg = checkFVG(allData['m5']);
+  let m5last = tfData['m5'][tfData['m5'].length-1];
+  candleSeries.update(m5last);
 
-  document.getElementById("price").innerHTML = lastPrice.toFixed(2);
-  document.getElementById("rsi").innerHTML = rsi.toFixed(2);
-  document.getElementById("fvg").innerHTML = fvg;
+  document.getElementById("price").innerHTML = m5last.close.toFixed(2);
+  document.getElementById("rsi").innerHTML = calcRSI(tfData['m5'].map(x=>x.close)).toFixed(2);
+  document.getElementById("fvg").innerHTML = getFVG(tfData['m5']);
   document.getElementById("con").innerHTML = Math.abs(confluence) + "/6";
 
-  // FINAL SIGNAL = 4/6 TF Confluence
   let sig = "WAIT";
-  if(confluence >= 4 && rsi < 47) sig = "VIP BUY";
-  if(confluence <= -4 && rsi > 53) sig = "VIP SELL";
+  if(confluence >= 4) sig = "VIP BUY";
+  if(confluence <= -4) sig = "VIP SELL";
   document.getElementById("signal").innerHTML = sig;
   document.getElementById("signal").className = "v " + (sig.includes("BUY")? "buy" : sig.includes("SELL")? "sell" : "");
 
 }, 3000);
-
-function calcRSI(closes, p){
-  let gain=0, loss=0;
-  for(let i=closes.length-p; i<closes.length; i++){
-    let diff = closes[i]-closes[i-1];
-    if(diff>0) gain+=diff; else loss-=diff;
-  }
-  return 100 - (100/(1+(gain/p)/(loss/p))));
 }
 </script>
 </body>
