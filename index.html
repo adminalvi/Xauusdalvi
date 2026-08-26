@@ -1,172 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>VIP ✅ ALL TF SWITCHER - SHAHZAIN V11</title>
-<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<title>VIP XAUUSD V13 REAL</title>
 <style>
-body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial;}
-#tfbuttons {display:flex; gap:5px; padding:8px; background:#0a0a0a; border-bottom:2px solid #00ff88;}
-.tfbtn {flex:1; padding:8px; background:#111; border:1px solid #333; color:#fff; border-radius:6px; cursor:pointer; font-weight:900;}
-.tfbtn.active {background:#00ff88; color:#000;}
-#chart {height:50vh; width:100%; background:#000;}
-#vipdash {height:42vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; overflow-y:auto;}
-.vipbox {background:#111; padding:8px; border-radius:8px; border-left:3px solid #00ff88;}
-.t {font-size:9px; color:#888;}.v {font-size:13px; font-weight:900;}
-.buy {color:#00ff88;}.sell {color:#ff0044;}.yellow {color:#ffff00;}
-.header {grid-column: span 7; text-align:center; color:#00ff88; font-weight:900;}
+body{background:#050505;color:#fff;font-family:Arial;margin:0;padding:10px}
+.header{text-align:center;color:#00ff00;font-size:20px;font-weight:bold;padding:10px;border:2px solid #0f0;border-radius:8px;margin-bottom:10px}
+.price-box{background:#111;border:2px solid #0ff;border-radius:10px;padding:15px;text-align:center;margin-bottom:10px}
+.price{font-size:32px;color:#0ff;font-weight:bold}
+.tfs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.tf-btn{padding:8px;background:#1a1a1a;border:1px solid #444;border-radius:6px;text-align:center;cursor:pointer;font-size:12px}
+.tf-btn.active{border-color:#0f0;background:#003300;color:#0f0}
+.card{background:#111;border:1px solid #333;border-radius:8px;padding:10px;margin:5px 0}
+.label{font-size:11px;color:#ff0;margin:3px 0}
+.tag{padding:6px;border-radius:6px;text-align:center;font-weight:bold;font-size:13px}
+.buy{background:#002200;color:#0f0}
+.sell{background:#220000;color:#f00}
+.wait{background:#222;color:#aaa}
 </style>
 </head>
 <body>
 
-<div id="tfbuttons">
-  <button class="tfbtn active" onclick="switchTF('m1')">M1</button>
-  <button class="tfbtn" onclick="switchTF('m5')">M5</button>
-  <button class="tfbtn" onclick="switchTF('m15')">M15</button>
-  <button class="tfbtn" onclick="switchTF('h1')">H1</button>
-  <button class="tfbtn" onclick="switchTF('h4')">H4</button>
-  <button class="tfbtn" onclick="switchTF('d1')">D1</button>
+<div class="header">🔥 VIP REAL TIME DASHBOARD V13 🔥</div>
+
+<div class="price-box">
+  <div>XAUUSD LIVE</div>
+  <div class="price" id="price">Loading...</div>
+  <div id="status">Connecting...</div>
 </div>
 
-<div id="chart"></div>
+<div class="tfs">
+  <div class="tf-btn active" onclick="selectTF('M1')">M1</div>
+  <div class="tf-btn" onclick="selectTF('M5')">M5</div>
+  <div class="tf-btn" onclick="selectTF('M15')">M15</div>
+  <div class="tf-btn" onclick="selectTF('M30')">M30</div>
+  <div class="tf-btn" onclick="selectTF('H1')">H1</div>
+  <div class="tf-btn" onclick="selectTF('H4')">H4</div>
+  <div class="tf-btn" onclick="selectTF('D1')">D1</div>
+  <div class="tf-btn" onclick="selectTF('W1')">W1</div>
+</div>
 
-<div id="vipdash">
-  <div class="header">🔥 VIP ✅ REAL TF SWITCHER - CURRENT: <span id="currenttf">M5</span> 🔥</div>
-  <div class="vipbox"><div class="t">Live Price</div><div class="v" id="price">4660.00</div></div>
-  <div class="vipbox"><div class="t">RSI 14</div><div class="v" id="rsi">--</div></div>
-  <div class="vipbox"><div class="t">FVG</div><div class="v yellow" id="fvg">--</div></div>
-  <div class="vipbox"><div class="t">Structure</div><div class="v" id="structure">--</div></div>
-  <div class="vipbox"><div class="t">Signal</div><div class="v" id="signal">WAIT</div></div>
-  <div class="vipbox"><div class="t">Candle Close In</div><div class="v" id="ctimer">--</div></div>
-  <div class="vipbox"><div class="t">Confluence</div><div class="v" id="con">0/6</div></div>
+<div class="card">
+  <div><b>SELECTED TF:</b> <span id="selected">M1</span></div>
+  <div class="label">STRUCTURE: <span id="structure">WAIT</span></div>
+  <div class="label">FVG: <span id="fvg">NONE</span></div>
+  <div class="label">VOLUME: <span id="volume">0</span></div>
+</div>
+
+<div class="card">
+  <div class="tag wait" id="signal">SIGNAL: WAIT</div>
+  <div style="text-align:center;margin-top:5px">CONFLUENCE: <span id="con">0/6</span></div>
 </div>
 
 <script>
-let currentTF = 'm5';
-let chart, candleSeries;
-let tfData = {m1:[], m5:[], m15:[], h1:[], h4:[], d1:[]};
-let tfSeconds = {m1:60, m5:300, m15:900, h1:3600, h4:14400, d1:86400};
-let basePrice = 4660; // Exness XAUUSD ke aas paas
-
-window.onload = function() {
-  chart = LightweightCharts.createChart(document.getElementById('chart'), {
-    layout: {backgroundColor: '#000'}, width: window.innerWidth, height: window.innerHeight * 0.5
-  });
-  candleSeries = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
-
-  // Sab TF ka data bana lo
-  for(let tf in tfData){
-    tfData[tf] = generateData(tf, 300);
-  }
-  switchTF('m5'); // Default M5
-  startLoop();
-}
-
-function switchTF(tf){
-  currentTF = tf;
-  document.querySelectorAll('.tfbtn').forEach(b=>b.classList.remove('active'));
-  document.querySelector(`.tfbtn[onclick="switchTF('${tf}')"]`).classList.add('active');
-  document.getElementById('currenttf').innerHTML = tf.toUpperCase();
-  candleSeries.setData(tfData[tf]);
-}
-
-function generateData(tf, count){
-  let data = [];
-  let price = basePrice + (Math.random()-0.5)*80;
-  for(let i=count; i>0; i--){
-    let change = (Math.random()-0.5)* (tfSeconds[tf]/100);
-    let open = price;
-    price += change;
-    let high = Math.max(open, price) + Math.random()*2;
-    let low = Math.min(open, price) - Math.random()*2;
-    data.push({
-      time: Math.floor(Date.now()/1000) - i*tfSeconds[tf],
-      open: open, high: high, low: low, close: price
-    });
-  }
-  return data;
-}
-
-function getStructure(data){
-  if(data.length < 3) return "WAIT";
-  let l = data.length;
-  if(data[l-1].close > data[l-2].high) return "BOS UP";
-  if(data[l-1].close < data[l-2].low) return "BOS DOWN";
-  if(data[l-1].high>data[l-2].high && data[l-1].low>data[l-2].low) return "BULLISH";
-  if(data[l-1].high<data[l-2].high && data[l-1].low<data[l-2].low) return "BEARISH";
-  return "RANGE";
-}
-
-function getFVG(data){
-  if(data.length < 3) return "NONE";
-  let l = data.length;
-  if(data[l-3].low > data[l-1].high) return "BULL FVG";
-  if(data[l-3].high < data[l-1].low) return "BEAR FVG";
-  return "NONE";
-}
-
-function calcRSI(closes){
-  if(closes.length < 15) return 50;
-  let gains=0, losses=0;
-  for(let i=closes.length-14; i<closes.length; i++){
-    let d = closes[i]-closes[i-1];
-    if(d>0) gains+=d; else losses-=d;
-  }
-  if(losses === 0) return 100;
-  return 100 - (100/(1+(gains/14)/(losses/14))));
-}
-
-function startLoop(){
-  setInterval(()=>{
-    let now = Math.floor(Date.now()/1000);
-    let confluence = 0;
-
-    for(let tf in tfData){
-      let last = tfData[tf][tfData[tf].length-1];
-
-      // ADVANCE CANDLE: Time pura ho to nayi candle
-      if(now >= last.time + tfSeconds[tf]){
-        let newPrice = last.close + (Math.random()-0.5)* (tfSeconds[tf]/80);
-        let open = last.close;
-        tfData[tf].push({
-          time: last.time + tfSeconds[tf],
-          open: open, high: Math.max(open,newPrice)+1, low: Math.min(open,newPrice)-1, close: newPrice
-        });
-      } else {
-        // Candle update
-        last.close += (Math.random()-0.5)*0.5;
-        last.high = Math.max(last.high, last.close);
-        last.low = Math.min(last.low, last.close);
-      }
-
-      // Confluence ke liye sab TF check
-      let s = getStructure(tfData[tf]);
-      if(s.includes("BULL")||s.includes("UP")) confluence++;
-      if(s.includes("BEAR")||s.includes("DOWN")) confluence--;
-    }
-
-    // Sirf current TF chart pe update karo
-    let clast = tfData[currentTF][tfData[currentTF].length-1];
-    candleSeries.update(clast);
-
-    // Dashboard update
-    let closes = tfData[currentTF].map(x=>x.close);
-    document.getElementById("price").innerHTML = clast.close.toFixed(2);
-    document.getElementById("rsi").innerHTML = calcRSI(closes).toFixed(2);
-    document.getElementById("fvg").innerHTML = getFVG(tfData[currentTF]);
-    document.getElementById("structure").innerHTML = getStructure(tfData[currentTF]);
-    document.getElementById("con").innerHTML = Math.abs(confluence) + "/6";
-
-    let left = tfSeconds[currentTF] - (now % tfSeconds[currentTF]);
-    document.getElementById("ctimer").innerHTML = Math.floor(left/60) + "m " + left%60 + "s";
-
-    let sig = "WAIT";
-    if(confluence >= 4) sig = "VIP BUY";
-    if(confluence <= -4) sig = "VIP SELL";
-    document.getElementById("signal").innerHTML = sig;
-    document.getElementById("signal").className = "v " + (sig.includes("BUY")? "buy" : sig.includes("SELL")? "sell" : "");
-
-  }, 1000);
-}
-</script>
-</body>
-</html>
+const API_KEY = "da
