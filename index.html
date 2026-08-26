@@ -1,196 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP FUTURE ICT PRO V4 - SHAHZAIN</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #050505; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; }
-    
-    .watermark {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: clamp(80px, 18vw, 240px);
-      color: #00ff88; opacity: 0.02; z-index: 0;
-      font-weight: 900; pointer-events: none; letter-spacing: 5px;
-    }
-
-    #tvchart { height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
-
-    .mainpanel {
-      position: fixed; top: 12px; right: 12px;
-      background: rgba(10, 10, 10, 0.92);
-      border: 2px solid #00ff88;
-      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-      padding: 14px 16px; z-index: 9999;
-      border-radius: 12px; width: 320px;
-      backdrop-filter: blur(8px);
-    }
-
-    .panel-title {
-      color: #00ff88; text-align: center;
-      font-size: 13px; font-weight: 800;
-      letter-spacing: 1.5px; margin-bottom: 10px;
-      border-bottom: 1px solid rgba(0,255,136,0.2);
-      padding-bottom: 6px; text-transform: uppercase;
-    }
-
-    .section {
-      background: #111113; padding: 8px 10px;
-      margin: 5px 0; border-radius: 6px;
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.5px; border-left: 3px solid #333;
-    }
-    .section-title { color: #888; font-size: 9.5px; text-transform: uppercase; margin-bottom: 4px; }
-
-    .buy { color: #00ff88; font-weight: 700; }
-    .sell { color: #ff0044; font-weight: 700; }
-    .yellow { color: #ffbb00; font-weight: 700; }
-    .val { float: right; color: #fff; }
-
-    .grid-2 { display: flex; justify-content: space-between; margin-top: 2px; }
-  </style>
+<title>VIP ✅ MULTI TF STRUCTURE - SHAHZAIN</title>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial;}
+#chart {height:55vh; width:100%;}
+#vipdash {height:45vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; overflow-y:auto;}
+.vipbox {background:#111; padding:8px; border-radius:10px; border-left:3px solid #00ff88;}
+.t {font-size:10px; color:#888;}.v {font-size:14px; font-weight:900;}
+.buy {color:#00ff88;}.sell {color:#ff0044;}.yellow {color:#ffff00;}
+.header {grid-column: span 7; text-align:center; color:#00ff88; font-weight:900;}
+.tfbox {background:#0a0a0a; border:1px solid #333;}
+</style>
 </head>
 <body>
+<div id="chart"></div>
 
-<div class="watermark">SHAHZAIN</div>
+<div id="vipdash">
+  <div class="header">🔥 VIP ✅ MULTI TIMEFRAME STRUCTURE 🔥</div>
 
-<div class="mainpanel">
-  <div class="panel-title">🔥 VIP FUTURE ICT PRO V4 🔥</div>
-  
-  <div class="section" style="border-left-color: #00ff88;">
-    <div class="section-title">MAIN SIGNAL</div>
-    <span id="mainSignal" class="yellow">SCANNING...</span>
-  </div>
+  <div class="vipbox"><div class="t">Price</div><div class="v" id="price">--</div></div>
+  <div class="vipbox"><div class="t">RSI</div><div class="v" id="rsi">--</div></div>
+  <div class="vipbox"><div class="t">FVG</div><div class="v yellow" id="fvg">--</div></div>
+  <div class="vipbox"><div class="t">Current TF</div><div class="v" id="ctf">H4</div></div>
+  <div class="vipbox"><div class="t">Signal</div><div class="v" id="signal">WAIT</div></div>
+  <div class="vipbox"><div class="t">Demand</div><div class="v buy">Auto</div></div>
+  <div class="vipbox"><div class="t">Supply</div><div class="v sell">Auto</div></div>
 
-  <div class="section">
-    <div class="section-title">DEMAND / SUPPLY ZONES</div>
-    <div>BUY ZONE: <span class="buy">4600.00 - 4619.00</span></div>
-    <div>SELL ZONE: <span class="sell">4736.00 - 4755.00</span></div>
-    <div>STATUS: <span id="zoneStatus" class="val yellow">NEUTRAL</span></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">MARKET DATA</div>
-    <div class="grid-2"><span>PRICE:</span><span id="price" class="val">--</span></div>
-    <div class="grid-2"><span>RSI (14):</span><span id="rsi" class="val">--</span></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">RISK & TARGET</div>
-    <div class="grid-2"><span>ENTRY:</span><span id="entry" class="val">-</span></div>
-    <div class="grid-2"><span>SL:</span><span id="sl" class="val sell">-</span></div>
-    <div class="grid-2"><span>TP1:</span><span id="tp1" class="val buy">-</span></div>
-    <div class="grid-2"><span>TP2:</span><span id="tp2" class="val buy">-</span></div>
-    <div class="grid-2"><span>TP3:</span><span id="tp3" class="val buy">-</span></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">SESSION / SYSTEM</div>
-    <div class="grid-2"><span>SESSION:</span><span id="session" class="val">-</span></div>
-    <div class="grid-2"><span>VOLATILITY:</span><span id="volatility" class="val yellow">NORMAL</span></div>
-  </div>
+  <div class="vipbox tfbox"><div class="t">M1 Structure</div><div class="v" id="m1s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">M5 Structure</div><div class="v" id="m5s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">M15 Structure</div><div class="v" id="m15s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">H1 Structure</div><div class="v" id="h1s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">H4 Structure</div><div class="v" id="h4s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">D1 Structure</div><div class="v" id="d1s">--</div></div>
+  <div class="vipbox tfbox"><div class="t">Confluence</div><div class="v" id="con">0/6</div></div>
 </div>
 
-<div id="tvchart"></div>
-
-<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-  new TradingView.widget({
-    "autosize": true,
-    "symbol": "OANDA:XAUUSD",
-    "interval": "240",
-    "timezone": "Asia/Karachi",
-    "theme": "dark",
-    "style": "1",
-    "container_id": "tvchart"
-  });
+const chart = LightweightCharts.createChart(document.getElementById('chart'), {layout: {bg: '#000'}});
+const candles = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
 
-  let pricesArr = [];
-  const rsiPeriod = 14;
+let allData = {}; // Har TF ka data yahan store hoga
+let timeframes = {m1: 60, m5: 300, m15: 900, h1: 3600, h4: 14400, d1: 86400};
 
-  function calculateRSI(prices) {
-    if (prices.length < rsiPeriod + 1) return 50.0;
-    let gains = 0, losses = 0;
-    for (let i = prices.length - rsiPeriod; i < prices.length; i++) {
-      let diff = prices[i] - prices[i - 1];
-      if (diff >= 0) gains += diff;
-      else losses += Math.abs(diff);
-    }
-    let avgGain = gains / rsiPeriod;
-    let avgLoss = losses / rsiPeriod;
-    if (avgLoss === 0) return 100;
-    let rs = avgGain / avgLoss;
-    return 100 - (100 / (1 + rs));
+// FAKE DATA GENERATE HAR TF KE LIYE
+function generateTFData(tf, count){
+  let data = [];
+  let price = 4615 + Math.random()*20;
+  for(let i=count; i>0; i--){
+    price += (Math.random()-0.5)* (tf/60);
+    data.push({time: Date.now()/1000 - i*tf, o: price, h: price+3, l: price-3, c: price + (Math.random()-0.5)*2});
+  }
+  return data;
+}
+
+// HAR TF KA STRUCTURE CHECK KARO
+function checkStructure(data){
+  if(data.length < 10) return "WAIT";
+  let last = data[data.length-1];
+  let prev = data[data.length-2];
+  let prev2 = data[data.length-3];
+
+  let hh = last.h > prev.h && prev.h > prev2.h;
+  let hl = last.l > prev.l && prev.l > prev2.l;
+  let lh = last.h < prev.h && prev.h < prev2.h;
+  let ll = last.l < prev.l && prev.l < prev2.l;
+
+  if(hh && hl) return "BULLISH";
+  if(lh && ll) return "BEARISH";
+  if(last.c > prev.h) return "BOS UP";
+  if(last.c < prev.l) return "BOS DOWN";
+  return "RANGE";
+}
+
+// FVG CHECK
+function checkFVG(data){
+  if(data.length < 3) return "--";
+  let c1 = data[data.length-3];
+  let c3 = data[data.length-1];
+  if(c1.l > c3.h) return "BULL FVG";
+  if(c1.h < c3.l) return "BEAR FVG";
+  return "NONE";
+}
+
+// MAIN LOOP
+setInterval(()=>{
+  candles.setData(generateTFData(300, 200)); // Chart pe M5 dikhao
+
+  let confluence = 0;
+  for(let tf in timeframes){
+    allData[tf] = generateTFData(timeframes[tf], 100);
+    let structure = checkStructure(allData[tf]);
+    let fvg = checkFVG(allData[tf]);
+
+    document.getElementById(tf+'s').innerHTML = structure;
+    document.getElementById(tf+'s').className = "v " + (structure.includes("BULL")||structure.includes("UP")? "buy" : structure.includes("BEAR")||structure.includes("DOWN")? "sell" : "");
+
+    if(structure.includes("BULL") || structure.includes("UP")) confluence++;
+    if(structure.includes("BEAR") || structure.includes("DOWN")) confluence--;
   }
 
-  // Live WebSocket price feed (PAXG/USDT tracks Gold spot prices 1:1)
-  const ws = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@trade');
-  
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    const price = parseFloat(data.p);
-    
-    pricesArr.push(price);
-    if(pricesArr.length > 50) pricesArr.shift();
+  let lastPrice = allData['m5'][allData['m5'].length-1].c;
+  let closes = allData['m5'].map(x=>x.c);
+  let rsi = calcRSI(closes, 14);
+  let fvg = checkFVG(allData['m5']);
 
-    const rsi = calculateRSI(pricesArr);
-    const atr = 15;
+  document.getElementById("price").innerHTML = lastPrice.toFixed(2);
+  document.getElementById("rsi").innerHTML = rsi.toFixed(2);
+  document.getElementById("fvg").innerHTML = fvg;
+  document.getElementById("con").innerHTML = Math.abs(confluence) + "/6";
 
-    document.getElementById("price").innerText = price.toFixed(2);
-    document.getElementById("rsi").innerText = rsi.toFixed(2);
+  // FINAL SIGNAL = 4/6 TF Confluence
+  let sig = "WAIT";
+  if(confluence >= 4 && rsi < 47) sig = "VIP BUY";
+  if(confluence <= -4 && rsi > 53) sig = "VIP SELL";
+  document.getElementById("signal").innerHTML = sig;
+  document.getElementById("signal").className = "v " + (sig.includes("BUY")? "buy" : sig.includes("SELL")? "sell" : "");
 
-    let risk = atr * 1.2;
-    document.getElementById("entry").innerText = price.toFixed(2);
-    document.getElementById("sl").innerText = (price - risk).toFixed(2);
-    document.getElementById("tp1").innerText = (price + risk * 1.0).toFixed(2);
-    document.getElementById("tp2").innerText = (price + risk * 2.0).toFixed(2);
-    document.getElementById("tp3").innerText = (price + risk * 3.0).toFixed(2);
+}, 3000);
 
-    let signal = "SCANNING...";
-    let zoneStatus = "NEUTRAL";
-    let mainSigElem = document.getElementById("mainSignal");
-    let zoneElem = document.getElementById("zoneStatus");
-
-    if (price <= 4619 && price >= 4600) {
-      zoneStatus = "BUY ZONE ACTIVE";
-      zoneElem.className = "val buy";
-      if (rsi < 48) {
-        signal = "BUY CONFIRMED 🚀";
-        mainSigElem.className = "buy";
-      }
-    } else if (price >= 4736 && price <= 4755) {
-      zoneStatus = "SELL ZONE ACTIVE";
-      zoneElem.className = "val sell";
-      if (rsi > 52) {
-        signal = "SELL CONFIRMED 🔻";
-        mainSigElem.className = "sell";
-      }
-    } else {
-      zoneElem.className = "val yellow";
-      mainSigElem.className = "yellow";
-      signal = "WAIT FOR SETUP";
-    }
-
-    mainSigElem.innerText = signal;
-    zoneElem.innerText = zoneStatus;
-  };
-
-  function updateSession() {
-    let now = new Date();
-    let utcHour = now.getUTCHours();
-    let session = "OFF MARKET";
-
-    if (utcHour >= 0 && utcHour < 9) session = "ASIA SESSION";
-    else if (utcHour >= 7 && utcHour < 16) session = "LONDON SESSION";
-    else if (utcHour >= 13 && utcHour < 22) session = "NEW YORK SESSION";
-
-    document.getElementById("session").innerText = session;
+function calcRSI(closes, p){
+  let gain=0, loss=0;
+  for(let i=closes.length-p; i<closes.length; i++){
+    let diff = closes[i]-closes[i-1];
+    if(diff>0) gain+=diff; else loss-=diff;
   }
-  
-  setInterval(updateSession, 1000);
-  updateSession();
+  return 100 - (100/(1+(gain/p)/(loss/p))));
+}
 </script>
 </body>
 </html>
