@@ -1,108 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>XAUUSD PRO DASHBOARD - Shahzain</title>
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<title>XAUUSD PRO DASHBOARD - SHAHZAIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body { background: #0a0a0a; color: #fff; margin: 0; font-family: 'Arial'; position: relative; }
-  
-  /* SHAHZAIN WATERMARK BG */
-  body::before {
-    content: "SHAHZAIN";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: 120px;
-    font-weight: bold;
-    color: rgba(0, 255, 136, 0.08);
-    z-index: 0;
-    pointer-events: none;
-    letter-spacing: 20px;
-  }
-  
-  .header { background: #111; padding: 10px; text-align: center; border-bottom: 2px solid #00ff88; position: relative; z-index: 1; }
-  .header h2 { margin: 0; color: #00ff88; }
-  .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; padding: 10px; position: relative; z-index: 1; }
-  #tv_chart { height: 75vh; }
-  .dashboard { background: #111; padding: 15px; border-radius: 10px; }
-  .alert { background: #1a1a1a; padding: 10px; margin: 8px 0; border-left: 4px solid #00ff88; border-radius: 5px; }
-  .alert.sell { border-color: #ff0044; }
-  .btn { background: #00ff88; color: #000; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-  .btn.sell { background: #ff0044; color: #fff; }
-  @media(max-width:900px){ .grid{grid-template-columns:1fr;} }
+body {margin:0; background:#000; color:#0f0; font-family:Arial;}
+h1 {text-align:center; color:#0ff;}
+#tvchart {height:80vh !important; width:100% !important;}
+.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:120px; color:#0f0; opacity:0.07; z-index:0;}
 </style>
 </head>
 <body>
+<div class="watermark">SHAHZAIN</div>
+<h1>💎 XAUUSD PRO DASHBOARD - SHAHZAIN</h1>
 
-<div class="header">
-  <h2>💎 XAUUSD PRO DASHBOARD - SHAHZAIN</h2>
-  <p>PK Time: <span id="pkTime"></span> | Next H4 Close: <span id="nextH4"></span></p>
-</div>
+<div id="tvchart"></div>
 
-<div class="grid">
-  <div id="tv_chart"></div>
-  
-  <div class="dashboard">
-    <h3>🔥 ALERT PANEL</h3>
-    <div id="alertBox">
-      <div class="alert">Waiting for liquidity sweep...</div>
-    </div>
-    
-    <h3>📈 FIBONACCI LEVELS</h3>
-    <div id="fiboLevels">
-      <p>0.0: $4673.76</p>
-      <p>0.236: $4661.44</p>
-      <p>0.382: $4653.81</p>
-      <p>0.5: $4647.49</p>
-      <p>0.618: $4641.16</p>
-      <p>0.786: $4632.32</p>
-      <p>1.0: $4629.61</p>
-    </div>
-    
-    <h3>💧 LIQUIDITY ZONES</h3>
-    <button class="btn" onclick="markLiquidity('buy')">Mark Buy Liquidity 4619</button>
-    <button class="btn sell" onclick="markLiquidity('sell')">Mark Sell Liquidity 4736</button>
-    <p style="font-size:12px;">Upper: $4736-$4767 | Lower: $4567-$4619</p>
-  </div>
-</div>
-
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
 new TradingView.widget({
-  "autosize": true,
-  "symbol": "OANDA:XAUUSD",
-  "interval": "240",
-  "timezone": "Asia/Karachi",
-  "theme": "dark",
-  "style": "1",
-  "locale": "en",
-  "toolbar_bg": "#111",
-  "enable_publishing": false,
-  "withdateranges": true,
-  "range": "3M",
-  "hide_side_toolbar": false,
-  "allow_symbol_change": true,
-  "studies": ["Volume@tv-basicstudies","FibRetracement@tv-basicstudies","FibChannels@tv-basicstudies"]
+"symbol": "OANDA:XAUUSD",
+"interval": "240",
+"theme": "dark",
+"style": "1",
+"toolbar_bg": "#000",
+"enable_publishing": false,
+"hide_top_toolbar": false,
+"hide_side_toolbar": false,
+"container_id": "tvchart",
+"height": "100%"
 });
-
-function updateTime() {
-  let now = new Date().toLocaleString("en-US", {timeZone: "Asia/Karachi"});
-  document.getElementById("pkTime").innerText = now;
-  let h = new Date().getHours();
-  let next = [3,7,11,15,19,23].find(x => x > h) || 3;
-  document.getElementById("nextH4").innerText = next + ":00 PK";
-}
-setInterval(updateTime, 1000);
-
-function markLiquidity(type) {
-  let alertBox = document.getElementById("alertBox");
-  if(type == 'buy') {
-    alertBox.innerHTML = '<div class="alert">✅ Buy Liquidity Marked at 4619</div>' + alertBox.innerHTML;
-  } else {
-    alertBox.innerHTML = '<div class="alert sell">✅ Sell Liquidity Marked at 4736</div>' + alertBox.innerHTML;
-  }
-}
 </script>
 </body>
 </html>
