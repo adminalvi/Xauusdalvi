@@ -1,35 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>XAUUSD PRO DASHBOARD - SHAHZAIN</title>
+<title>XAUUSD PRO ALERT - SHAHZAIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {margin:0; background:#000; color:#0f0; font-family:Arial;}
-h1 {text-align:center; color:#0ff;}
-#tvchart {height:80vh !important; width:100% !important;}
-.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:120px; color:#0f0; opacity:0.07; z-index:0;}
+body {margin:0; background:#0a0a0a; color:#0ff; font-family:Arial; overflow:hidden;}
+.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:150px; color:#0f0; opacity:0.05; z-index:0; font-weight:bold;}
+#tvchart {height:100vh !important; width:100% !important; position:absolute; top:0; left:0; z-index:1;}
+.alert-box {position:fixed; top:10px; right:10px; background:#111; border:2px solid #0f0; padding:15px; z-index:2; border-radius:10px; font-size:14px;}
+.alert-buy {color:#0f0; font-weight:bold;}
+.alert-sell {color:#f00; font-weight:bold;}
 </style>
 </head>
 <body>
 <div class="watermark">SHAHZAIN</div>
-<h1>💎 XAUUSD PRO DASHBOARD - SHAHZAIN</h1>
+
+<div class="alert-box">
+  <div class="alert-buy">BUY LIQUIDITY: 4619</div>
+  <div class="alert-sell">SELL LIQUIDITY: 4736</div>
+  <div id="status">Waiting for price...</div>
+</div>
 
 <div id="tvchart"></div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-new TradingView.widget({
+var widget = new TradingView.widget({
+"width": "100%",
+"height": "100%",
 "symbol": "OANDA:XAUUSD",
 "interval": "240",
+"range": "6M",
+"timezone": "Asia/Karachi",
 "theme": "dark",
 "style": "1",
-"toolbar_bg": "#000",
+"locale": "en",
+"toolbar_bg": "#0a0a0a",
 "enable_publishing": false,
-"hide_top_toolbar": false,
-"hide_side_toolbar": false,
+"allow_symbol_change": true,
 "container_id": "tvchart",
-"height": "100%"
+"overrides": {
+    "paneProperties.background": "#0a0a0a",
+    "paneProperties.vertGridProperties.color": "#222",
+    "paneProperties.horzGridProperties.color": "#222"
+}
 });
+
+// ALERT CHECK
+setInterval(function(){
+  var price = widget.chart().getData().lastBarClosePrice;
+  if(price){
+    document.getElementById("status").innerHTML = "Live Price: " + price.toFixed(2);
+    if(price <= 4619){
+      document.getElementById("status").innerHTML = "BUY ALERT! Price hit 4619";
+      document.getElementById("status").style.color = "#0f0";
+      new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+    }
+    if(price >= 4736){
+      document.getElementById("status").innerHTML = "SELL ALERT! Price hit 4736";
+      document.getElementById("status").style.color = "#f00";
+      new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+    }
+  }
+}, 5000); // har 5 sec me check karega
 </script>
 </body>
 </html>
