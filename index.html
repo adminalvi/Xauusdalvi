@@ -1,159 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>VIP FUTURE ICT PRO - SHAHZAIN</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial; overflow:hidden;}
-.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:320px; color:#00ff88; opacity:0.015; z-index:0; font-weight:900;}
-#tvchart {height:100vh!important; width:100%!important; position:absolute; top:0; left:0; z-index:1;}
-.mainpanel {position:fixed; top:10px; right:10px; background:#0a0a0a; border:3px solid #00ff88; padding:15px; z-index:9999; border-radius:15px; width:340px; max-height:97vh; overflow-y:auto;}
-.mainpanel h2 {margin:0 0 10px 0; color:#00ff88; text-align:center; font-size:14px;}
-.section {background:#111; padding:10px; margin:6px 0; border-radius:8px;}
-.title {font-weight:bold; color:#aaa; font-size:12px; margin-bottom:4px;}
-.value {font-size:15px; font-weight:900;}
-.buy {color:#00ff88;}.sell {color:#ff0044;}.wait {color:#888;}.yellow {color:#ffff00;}
-.grid {display:grid; grid-template-columns:1fr 1fr; gap:5px;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIP FUTURE ICT PRO V4 - SHAHZAIN</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #050505; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; }
+    
+    .watermark {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(80px, 18vw, 240px);
+      color: #00ff88; opacity: 0.02; z-index: 0;
+      font-weight: 900; pointer-events: none; letter-spacing: 5px;
+    }
+
+    #tvchart { height: 100vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+
+    .mainpanel {
+      position: fixed; top: 12px; right: 12px;
+      background: rgba(10, 10, 10, 0.92);
+      border: 2px solid #00ff88;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+      padding: 14px 16px; z-index: 9999;
+      border-radius: 12px; width: 320px;
+      backdrop-filter: blur(8px);
+    }
+
+    .panel-title {
+      color: #00ff88; text-align: center;
+      font-size: 13px; font-weight: 800;
+      letter-spacing: 1.5px; margin-bottom: 10px;
+      border-bottom: 1px solid rgba(0,255,136,0.2);
+      padding-bottom: 6px; text-transform: uppercase;
+    }
+
+    .section {
+      background: #111113; padding: 8px 10px;
+      margin: 5px 0; border-radius: 6px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.5px; border-left: 3px solid #333;
+    }
+    .section-title { color: #888; font-size: 9.5px; text-transform: uppercase; margin-bottom: 4px; }
+
+    .buy { color: #00ff88; font-weight: 700; }
+    .sell { color: #ff0044; font-weight: 700; }
+    .yellow { color: #ffbb00; font-weight: 700; }
+    .val { float: right; color: #fff; }
+
+    .grid-2 { display: flex; justify-content: space-between; margin-top: 2px; }
+  </style>
 </head>
 <body>
+
 <div class="watermark">SHAHZAIN</div>
 
 <div class="mainpanel">
-  <h2>🔥 VIP FUTURE ICT PRO PANEL 🔥</h2>
-
-  <div class="section">
-    <div class="title">MAIN SIGNAL</div>
-    <div class="value" id="mainSignal">SCANNING...</div>
+  <div class="panel-title">🔥 VIP FUTURE ICT PRO V4 🔥</div>
+  
+  <div class="section" style="border-left-color: #00ff88;">
+    <div class="section-title">MAIN SIGNAL</div>
+    <span id="mainSignal" class="yellow">SCANNING...</span>
   </div>
 
   <div class="section">
-    <div class="title">MULTI TIMEFRAME ANALYSIS</div>
-    <div class="grid">
-      <div>M1: <span id="m1" class="wait">-</span></div>
-      <div>M5: <span id="m5" class="wait">-</span></div>
-      <div>M15: <span id="m15" class="wait">-</span></div>
-      <div>H1: <span id="h1" class="wait">-</span></div>
-      <div>H4: <span id="h4" class="wait">-</span></div>
-      <div>D1: <span id="d1" class="wait">-</span></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="title">DEMAND / SUPPLY ZONES</div>
+    <div class="section-title">DEMAND / SUPPLY ZONES</div>
     <div>BUY ZONE: <span class="buy">4600.00 - 4619.00</span></div>
     <div>SELL ZONE: <span class="sell">4736.00 - 4755.00</span></div>
-    <div>STATUS: <span id="zoneStatus">NEUTRAL</span></div>
+    <div>STATUS: <span id="zoneStatus" class="val yellow">NEUTRAL</span></div>
   </div>
 
   <div class="section">
-    <div class="title">RISK & TARGET</div>
-    <div>ENTRY: <span id="entry">-</span></div>
-    <div>SL: <span id="sl" class="sell">-</span></div>
-    <div>TP1: <span id="tp1" class="buy">-</span></div>
-    <div>TP2: <span id="tp2" class="buy">-</span></div>
-    <div>TP3: <span id="tp3" class="buy">-</span></div>
+    <div class="section-title">MARKET DATA</div>
+    <div class="grid-2"><span>PRICE:</span><span id="price" class="val">--</span></div>
+    <div class="grid-2"><span>RSI (14):</span><span id="rsi" class="val">--</span></div>
   </div>
 
   <div class="section">
-    <div class="title">M1 / M5 PROJECTION</div>
-    <div>M1 TARGET: <span id="m1proj" class="yellow">-</span></div>
-    <div>M5 TARGET: <span id="m5proj" class="yellow">-</span></div>
+    <div class="section-title">RISK & TARGET</div>
+    <div class="grid-2"><span>ENTRY:</span><span id="entry" class="val">-</span></div>
+    <div class="grid-2"><span>SL:</span><span id="sl" class="val sell">-</span></div>
+    <div class="grid-2"><span>TP1:</span><span id="tp1" class="val buy">-</span></div>
+    <div class="grid-2"><span>TP2:</span><span id="tp2" class="val buy">-</span></div>
+    <div class="grid-2"><span>TP3:</span><span id="tp3" class="val buy">-</span></div>
   </div>
 
   <div class="section">
-    <div class="title">SESSION / NEWS</div>
-    <div>SESSION: <span id="session">-</span></div>
-    <div>VOLATILITY: <span id="vol">-</span></div>
+    <div class="section-title">SESSION / SYSTEM</div>
+    <div class="grid-2"><span>SESSION:</span><span id="session" class="val">-</span></div>
+    <div class="grid-2"><span>VOLATILITY:</span><span id="volatility" class="val yellow">NORMAL</span></div>
   </div>
-
 </div>
 
 <div id="tvchart"></div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-var widget = new TradingView.widget({
-"autosize": true, "symbol": "OANDA:XAUUSD", "interval": "240",
-"timezone": "Asia/Karachi", "theme": "dark", "style": "1",
-"container_id": "tvchart", "studies": ["RSI@tv-basicstudies"]
-});
+  new TradingView.widget({
+    "autosize": true,
+    "symbol": "OANDA:XAUUSD",
+    "interval": "240",
+    "timezone": "Asia/Karachi",
+    "theme": "dark",
+    "style": "1",
+    "container_id": "tvchart"
+  });
 
-let buyZone = {low: 4600, high: 4619};
-let sellZone = {low: 4736, high: 4755};
-let inTrade = false;
+  let pricesArr = [];
+  const rsiPeriod = 14;
 
-widget.onChartReady(function() {
-  // CHART PE BARE ZONES
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: buyZone.high},
-  {shape: "rectangle", text: "DEMAND ZONE", disableSelection: true,
-   overrides: {backgroundColor: "rgba(0,255,136,0.25)", borderColor: "#00ff88", borderWidth: 3}});
-
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: sellZone.high},
-  {shape: "rectangle", text: "SUPPLY ZONE", disableSelection: true,
-   overrides: {backgroundColor: "rgba(255,0,68,0.25)", borderColor: "#ff0044", borderWidth: 3}});
-});
-
-// LIVE SCANNER HAR 2 SEC
-setInterval(function(){
-  try{
-    var data = widget.chart().getData();
-    var price = data.lastBarClosePrice;
-    var rsi = data.studies[0].lastValue;
-    var atr = (data.lastBarHighPrice - data.lastBarLowPrice);
-
-    if(price){
-      // ENTRY SL TP CALCULATION JESA TUMHARE PINE ME THA
-      let risk = atr * 1.2;
-      document.getElementById("entry").innerHTML = price.toFixed(2);
-      document.getElementById("sl").innerHTML = (price - risk).toFixed(2);
-      document.getElementById("tp1").innerHTML = (price + risk * 1.0).toFixed(2);
-      document.getElementById("tp2").innerHTML = (price + risk * 2.0).toFixed(2);
-      document.getElementById("tp3").innerHTML = (price + risk * 3.0).toFixed(2);
-      document.getElementById("m1proj").innerHTML = (price + atr * 0.8).toFixed(2);
-      document.getElementById("m5proj").innerHTML = (price + atr * 1.8).toFixed(2);
-
-      // ZONE STATUS
-      if(price >= buyZone.low && price <= buyZone.high) document.getElementById("zoneStatus").innerHTML = "IN DEMAND";
-      else if(price >= sellZone.low && price <= sellZone.high) document.getElementById("zoneStatus").innerHTML = "IN SUPPLY";
-      else document.getElementById("zoneStatus").innerHTML = "NEUTRAL";
-
-      // VIP SIGNAL LOGIC
-      let signal = "WAIT";
-      let cls = "wait";
-      if(price <= buyZone.high && price >= buyZone.low && rsi < 47){
-        signal = "VIP BUY"; cls = "buy";
-      }
-      else if(price >= sellZone.low && price <= sellZone.high && rsi > 53){
-        signal = "VIP SELL"; cls = "sell";
-      }
-      document.getElementById("mainSignal").innerHTML = signal;
-      document.getElementById("mainSignal").className = "value " + cls;
-
-      // MULTI TF SIMULATION
-      updateTF('m1', price, rsi);
-      updateTF('m5', price, rsi);
-      updateTF('m15', price, rsi);
-      updateTF('h1', price, rsi);
-      updateTF('h4', price, rsi);
-      updateTF('d1', price, rsi);
-
-      // SESSION
-      let hour = new Date().getHours();
-      let session = hour >= 13 && hour < 22? "NEW YORK" : hour >= 7 && hour < 16? "LONDON" : hour >= 0 && hour < 9? "ASIA" : "OFF";
-      document.getElementById("session").innerHTML = session;
-      document.getElementById("vol").innerHTML = atr > 20? "HIGH" : "NORMAL";
+  function calculateRSI(prices) {
+    if (prices.length < rsiPeriod + 1) return 50.0;
+    let gains = 0, losses = 0;
+    for (let i = prices.length - rsiPeriod; i < prices.length; i++) {
+      let diff = prices[i] - prices[i - 1];
+      if (diff >= 0) gains += diff;
+      else losses += Math.abs(diff);
     }
-  }catch(e){}
-}, 2000);
+    let avgGain = gains / rsiPeriod;
+    let avgLoss = losses / rsiPeriod;
+    if (avgLoss === 0) return 100;
+    let rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+  }
 
-function updateTF(id, p, r){
-  let s = "WAIT"; let c = "wait";
-  if(p <= buyZone.high && p >= buyZone.low && r < 47){ s = "BUY"; c = "buy"; }
-  else if(p >= sellZone.low && p <= sellZone.high && r > 53){ s = "SELL"; c = "sell"; }
-  document.getElementById(id).innerHTML = s;
-  document.getElementById(id).className = c;
-}
+  // Live WebSocket price feed (PAXG/USDT tracks Gold spot prices 1:1)
+  const ws = new WebSocket('wss://stream.binance.com:9443/ws/paxgusdt@trade');
+  
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    const price = parseFloat(data.p);
+    
+    pricesArr.push(price);
+    if(pricesArr.length > 50) pricesArr.shift();
+
+    const rsi = calculateRSI(pricesArr);
+    const atr = 15;
+
+    document.getElementById("price").innerText = price.toFixed(2);
+    document.getElementById("rsi").innerText = rsi.toFixed(2);
+
+    let risk = atr * 1.2;
+    document.getElementById("entry").innerText = price.toFixed(2);
+    document.getElementById("sl").innerText = (price - risk).toFixed(2);
+    document.getElementById("tp1").innerText = (price + risk * 1.0).toFixed(2);
+    document.getElementById("tp2").innerText = (price + risk * 2.0).toFixed(2);
+    document.getElementById("tp3").innerText = (price + risk * 3.0).toFixed(2);
+
+    let signal = "SCANNING...";
+    let zoneStatus = "NEUTRAL";
+    let mainSigElem = document.getElementById("mainSignal");
+    let zoneElem = document.getElementById("zoneStatus");
+
+    if (price <= 4619 && price >= 4600) {
+      zoneStatus = "BUY ZONE ACTIVE";
+      zoneElem.className = "val buy";
+      if (rsi < 48) {
+        signal = "BUY CONFIRMED 🚀";
+        mainSigElem.className = "buy";
+      }
+    } else if (price >= 4736 && price <= 4755) {
+      zoneStatus = "SELL ZONE ACTIVE";
+      zoneElem.className = "val sell";
+      if (rsi > 52) {
+        signal = "SELL CONFIRMED 🔻";
+        mainSigElem.className = "sell";
+      }
+    } else {
+      zoneElem.className = "val yellow";
+      mainSigElem.className = "yellow";
+      signal = "WAIT FOR SETUP";
+    }
+
+    mainSigElem.innerText = signal;
+    zoneElem.innerText = zoneStatus;
+  };
+
+  function updateSession() {
+    let now = new Date();
+    let utcHour = now.getUTCHours();
+    let session = "OFF MARKET";
+
+    if (utcHour >= 0 && utcHour < 9) session = "ASIA SESSION";
+    else if (utcHour >= 7 && utcHour < 16) session = "LONDON SESSION";
+    else if (utcHour >= 13 && utcHour < 22) session = "NEW YORK SESSION";
+
+    document.getElementById("session").innerText = session;
+  }
+  
+  setInterval(updateSession, 1000);
+  updateSession();
 </script>
 </body>
 </html>
