@@ -1,0 +1,38 @@
+﻿
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                  xmlns:w="urn:schemas-microsoft-com:office:word" 
+                  xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <meta charset="utf-8">
+                <title>&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset</title>
+                <!--[if gte mso 9]>
+                <xml>
+                    <w:WordDocument>
+                        <w:View>Print</w:View>
+                        <w:Zoom>100</w:Zoom>
+                    </w:WordDocument>
+                </xml>
+                <![endif]-->
+                <style>
+                    @page {
+                        size: 8.5in 11in;
+                        margin: 1in;
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 12pt;
+                        line-height: 1.5;
+                    }
+                    h1 { font-size: 24pt; }
+                    h2 { font-size: 18pt; }
+                    h3 { font-size: 14pt; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid #000; padding: 8px; }
+                    th { background-color: #f0f0f0; }
+                </style>
+            </head>
+            <body>
+                <p>&lt;!DOCTYPE html&gt;</p><p>&lt;html lang="en"&gt;</p><p>&lt;head&gt;</p><p>&lt;meta charset="UTF-8"&gt;</p><p>&lt;title&gt;XAUUSD PRO DASHBOARD - Shahzain&lt;/title&gt;</p><p>&lt;script type="text/javascript" src="https://s3.tradingview.com/tv.js"&gt;&lt;/script&gt;</p><p>&lt;style&gt;</p><p>  body { background: #0a0a0a; color: #fff; margin: 0; font-family: 'Arial'; position: relative; }</p><p>  </p><p>  /* SHAHZAIN WATERMARK BG */</p><p>  body::before {</p><p>    content: "SHAHZAIN";</p><p>    position: fixed;</p><p>    top: 50%;</p><p>    left: 50%;</p><p>    transform: translate(-50%, -50%) rotate(-30deg);</p><p>    font-size: 120px;</p><p>    font-weight: bold;</p><p>    color: rgba(0, 255, 136, 0.08);</p><p>    z-index: 0;</p><p>    pointer-events: none;</p><p>    letter-spacing: 20px;</p><p>  }</p><p>  </p><p>  .header { background: #111; padding: 10px; text-align: center; border-bottom: 2px solid #00ff88; position: relative; z-index: 1; }</p><p>  .header h2 { margin: 0; color: #00ff88; }</p><p>  .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; padding: 10px; position: relative; z-index: 1; }</p><p>  #tv_chart { height: 75vh; }</p><p>  .dashboard { background: #111; padding: 15px; border-radius: 10px; }</p><p>  .alert { background: #1a1a1a; padding: 10px; margin: 8px 0; border-left: 4px solid #00ff88; border-radius: 5px; }</p><p>  .alert.sell { border-color: #ff0044; }</p><p>  .btn { background: #00ff88; color: #000; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }</p><p>  .btn.sell { background: #ff0044; color: #fff; }</p><p>  @media(max-width:900px){ .grid{grid-template-columns:1fr;} }</p><p>&lt;/style&gt;</p><p>&lt;/head&gt;</p><p>&lt;body&gt;</p><p><br></p><p>&lt;div class="header"&gt;</p><p>  &lt;h2&gt;💎 XAUUSD PRO DASHBOARD - SHAHZAIN&lt;/h2&gt;</p><p>  &lt;p&gt;PK Time: &lt;span id="pkTime"&gt;&lt;/span&gt; | Next H4 Close: &lt;span id="nextH4"&gt;&lt;/span&gt;&lt;/p&gt;</p><p>&lt;/div&gt;</p><p><br></p><p>&lt;div class="grid"&gt;</p><p>  &lt;div id="tv_chart"&gt;&lt;/div&gt;</p><p>  </p><p>  &lt;div class="dashboard"&gt;</p><p>    &lt;h3&gt;🔥 ALERT PANEL&lt;/h3&gt;</p><p>    &lt;div id="alertBox"&gt;</p><p>      &lt;div class="alert"&gt;Waiting for liquidity sweep...&lt;/div&gt;</p><p>    &lt;/div&gt;</p><p>    </p><p>    &lt;h3&gt;📈 FIBONACCI LEVELS&lt;/h3&gt;</p><p>    &lt;div id="fiboLevels"&gt;</p><p>      &lt;p&gt;0.0: $4673.76&lt;/p&gt;</p><p>      &lt;p&gt;0.236: $4661.44&lt;/p&gt;</p><p>      &lt;p&gt;0.382: $4653.81&lt;/p&gt;</p><p>      &lt;p&gt;0.5: $4647.49&lt;/p&gt;</p><p>      &lt;p&gt;0.618: $4641.16&lt;/p&gt;</p><p>      &lt;p&gt;0.786: $4632.32&lt;/p&gt;</p><p>      &lt;p&gt;1.0: $4629.61&lt;/p&gt;</p><p>    &lt;/div&gt;</p><p>    </p><p>    &lt;h3&gt;💧 LIQUIDITY ZONES&lt;/h3&gt;</p><p>    &lt;button class="btn" onclick="markLiquidity('buy')"&gt;Mark Buy Liquidity 4619&lt;/button&gt;</p><p>    &lt;button class="btn sell" onclick="markLiquidity('sell')"&gt;Mark Sell Liquidity 4736&lt;/button&gt;</p><p>    &lt;p style="font-size:12px;"&gt;Upper: $4736-$4767 | Lower: $4567-$4619&lt;/p&gt;</p><p>  &lt;/div&gt;</p><p>&lt;/div&gt;</p><p><br></p><p>&lt;script&gt;</p><p>new TradingView.widget({</p><p>  "autosize": true,</p><p>  "symbol": "OANDA:XAUUSD",</p><p>  "interval": "240",</p><p>  "timezone": "Asia/Karachi",</p><p>  "theme": "dark",</p><p>  "style": "1",</p><p>  "locale": "en",</p><p>  "toolbar_bg": "#111",</p><p>  "enable_publishing": false,</p><p>  "withdateranges": true,</p><p>  "range": "3M",</p><p>  "hide_side_toolbar": false,</p><p>  "allow_symbol_change": true,</p><p>  "studies": ["Volume@tv-basicstudies","FibRetracement@tv-basicstudies","FibChannels@tv-basicstudies"]</p><p>});</p><p><br></p><p>function updateTime() {</p><p>  let now = new Date().toLocaleString("en-US", {timeZone: "Asia/Karachi"});</p><p>  document.getElementById("pkTime").innerText = now;</p><p>  let h = new Date().getHours();</p><p>  let next = [3,7,11,15,19,23].find(x =&gt; x &gt; h) || 3;</p><p>  document.getElementById("nextH4").innerText = next + ":00 PK";</p><p>}</p><p>setInterval(updateTime, 1000);</p><p><br></p><p>function markLiquidity(type) {</p><p>  let alertBox = document.getElementById("alertBox");</p><p>  if(type == 'buy') {</p><p>    alertBox.innerHTML = '&lt;div class="alert"&gt;✅ Buy Liquidity Marked at 4619&lt;/div&gt;' + alertBox.innerHTML;</p><p>  } else {</p><p>    alertBox.innerHTML = '&lt;div class="alert sell"&gt;✅ Sell Liquidity Marked at 4736&lt;/div&gt;' + alertBox.innerHTML;</p><p>  }</p><p>}</p><p>&lt;/script&gt;</p><p>&lt;/body&gt;</p><p>&lt;/html&gt;</p>
+            </body>
+            </html>
+        
