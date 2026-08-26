@@ -1,55 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>VIP XAUUSD V13 REAL</title>
+<title>VIP XAUUSD V14 CANDLE</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 body{background:#050505;color:#fff;font-family:Arial;margin:0;padding:10px}
-.header{text-align:center;color:#00ff00;font-size:20px;font-weight:bold;padding:10px;border:2px solid #0f0;border-radius:8px;margin-bottom:10px}
-.price-box{background:#111;border:2px solid #0ff;border-radius:10px;padding:15px;text-align:center;margin-bottom:10px}
-.price{font-size:32px;color:#0ff;font-weight:bold}
-.tfs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
-.tf-btn{padding:8px;background:#1a1a1a;border:1px solid #444;border-radius:6px;text-align:center;cursor:pointer;font-size:12px}
+.header{text-align:center;color:#00ff00;font-size:18px;font-weight:bold;padding:8px;border:2px solid #0f0;border-radius:8px;margin-bottom:8px}
+.price-box{background:#111;border:2px solid #0ff;border-radius:10px;padding:10px;text-align:center;margin-bottom:8px}
+.price{font-size:28px;color:#0ff;font-weight:bold}
+canvas{background:#0a0a0a;border-radius:8px}
+.tfs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+.tf-btn{padding:6px;background:#1a1a1a;border:1px solid #444;border-radius:5px;text-align:center;cursor:pointer;font-size:11px}
 .tf-btn.active{border-color:#0f0;background:#003300;color:#0f0}
-.card{background:#111;border:1px solid #333;border-radius:8px;padding:10px;margin:5px 0}
-.label{font-size:11px;color:#ff0;margin:3px 0}
-.tag{padding:6px;border-radius:6px;text-align:center;font-weight:bold;font-size:13px}
-.buy{background:#002200;color:#0f0}
-.sell{background:#220000;color:#f00}
-.wait{background:#222;color:#aaa}
 </style>
 </head>
 <body>
 
-<div class="header">🔥 VIP REAL TIME DASHBOARD V13 🔥</div>
+<div class="header">🔥 VIP CANDLE DASHBOARD V14 🔥</div>
 
 <div class="price-box">
   <div>XAUUSD LIVE</div>
   <div class="price" id="price">Loading...</div>
-  <div id="status">Connecting...</div>
 </div>
 
 <div class="tfs">
-  <div class="tf-btn active" onclick="selectTF('M1')">M1</div>
-  <div class="tf-btn" onclick="selectTF('M5')">M5</div>
-  <div class="tf-btn" onclick="selectTF('M15')">M15</div>
-  <div class="tf-btn" onclick="selectTF('M30')">M30</div>
-  <div class="tf-btn" onclick="selectTF('H1')">H1</div>
-  <div class="tf-btn" onclick="selectTF('H4')">H4</div>
-  <div class="tf-btn" onclick="selectTF('D1')">D1</div>
-  <div class="tf-btn" onclick="selectTF('W1')">W1</div>
+  <div class="tf-btn active" onclick="selectTF('M1', '1', this)">M1</div>
+  <div class="tf-btn" onclick="selectTF('M5', '5', this)">M5</div>
+  <div class="tf-btn" onclick="selectTF('M15', '15', this)">M15</div>
+  <div class="tf-btn" onclick="selectTF('H1', '60', this)">H1</div>
 </div>
 
-<div class="card">
-  <div><b>SELECTED TF:</b> <span id="selected">M1</span></div>
-  <div class="label">STRUCTURE: <span id="structure">WAIT</span></div>
-  <div class="label">FVG: <span id="fvg">NONE</span></div>
-  <div class="label">VOLUME: <span id="volume">0</span></div>
-</div>
-
-<div class="card">
-  <div class="tag wait" id="signal">SIGNAL: WAIT</div>
-  <div style="text-align:center;margin-top:5px">CONFLUENCE: <span id="con">0/6</span></div>
-</div>
+<canvas id="chart" height="200"></canvas>
 
 <script>
-const API_KEY = "da
+const API_KEY = "da7er8pr01qj8fm6jrpgda7er8pr01qj8fm6jrq0";
+const SYMBOL = "OANDA:XAU_USD";
+let currentTF = "M1";
+let currentResolution = "1";
+let chart;
+
+async function getPrice(){
+  try {
+    let res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}&token=${API_KEY}`);
+    let data = await res.json();
+    if (data && data.c) {
+      document.getElementById("price").innerText = "$" + data.c.toFixed(2);
+    }
+  } catch(e) {
+    console.error("Price fetch error:", e);
+  }
+}
+
+async function getCandles(){
+  try {
+    const to = Math.floor(Date.now() / 1000);
+    const from = to - (50 * 60 * parseInt(currentResolution === '60' ? 60 : currentResolution)); // Last 50 candles
+    
+    let res = await fetch(`https://finnhub.io/api/v1/forex/candle?symbol=${SYMBOL}&resolution=${currentResolution}&from=${from}&to=${to}&token=${API_KEY}`);
+    let data = await res.json();
+    
+    if (data.s === "ok") {
+      let labels = data.t.map(t => new Date(t * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+      let candleData = data.c.map((close, i) => ({
+        o: data.o[i],
+        h: data.h[i],
+        l: data.l[i],
+        c: close
+      }));
+      return { labels, candleData };
+    }
+  } catch(e) {
+    console.error("Candle fetch error:", e);
+  }
+  return null;
+}
+
+function selectTF(tf, res, btnElement){
+  currentTF = tf;
+  currentResolution = res;
+  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+  btnElement.classList.add('active');
+  drawChart();
+}
+
+async function drawChart(){
+  const liveData = await getCandles();
+  const ctx = document.getElementById('chart');
+
+  let labels = liveData ? liveData.labels : ['1','2','3','4','5'];
+  let candleData = liveData ? liveData.candleData : [
+    {o:2600, h:2605, l:2598, c:2602},
+    {o:2602, h:2608, l:2601, c:2606}
+  ];
+
+  if(chart) chart.destroy();
+  
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: currentTF + ' Candle Close Price',
+        data: candleData.map(d => d.c),
+        backgroundColor: candleData.map(d => d.c >= d.o ? '#00ff00' : '#ff0000')
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { grid: { color: '#333' }, ticks: { color: '#fff' } },
+        x: { grid: { color: '#333' }, ticks: { color: '#fff' } }
+      }
+    }
+  });
+}
+
+// Initial Calls
+getPrice();
+drawChart();
+
+// Polling intervals
+setInterval(getPrice, 5000);
+setInterval(drawChart, 15000);
+</script>
+</body>
+</html>
