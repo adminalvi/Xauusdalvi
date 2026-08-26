@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>XAUUSD PRO ALERT - SHAHZAIN</title>
+<title>XAUUSD ICT PRO - SHAHZAIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {margin:0; background:#0a0a0a; color:#0ff; font-family:Arial; overflow:hidden;}
-.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:150px; color:#0f0; opacity:0.05; z-index:0; font-weight:bold;}
-#tvchart {height:100vh !important; width:100% !important; position:absolute; top:0; left:0; z-index:1;}
-.alert-box {position:fixed; top:10px; right:10px; background:#111; border:2px solid #0f0; padding:15px; z-index:2; border-radius:10px; font-size:14px;}
-.alert-buy {color:#0f0; font-weight:bold;}
-.alert-sell {color:#f00; font-weight:bold;}
+body {margin:0; background:#030303; color:#fff; font-family:'Segoe UI',Arial; overflow:hidden;}
+.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:200px; color:#00ff88; opacity:0.03; z-index:0; font-weight:900;}
+#tvchart {height:100vh!important; width:100%!important; position:absolute; top:0; left:0; z-index:1;}
+.dashboard {position:fixed; top:10px; right:10px; background:#0a0a0a; border:2px solid #00ff88; padding:15px; z-index:2; border-radius:12px; font-size:12px; width:240px;}
+.dashboard h3 {margin:0 0 10px 0; color:#00ff88; text-align:center;}
+.zone {padding:5px; margin:3px 0; border-radius:4px;}
+.buy {background:rgba(0,255,136,0.1); color:#00ff88;}
+.sell {background:rgba(255,0,68,0.1); color:#ff0044;}
+.alert {margin-top:8px; padding:8px; background:#111; border-radius:6px; text-align:center; font-weight:bold;}
 </style>
 </head>
 <body>
 <div class="watermark">SHAHZAIN</div>
 
-<div class="alert-box">
-  <div class="alert-buy">BUY LIQUIDITY: 4619</div>
-  <div class="alert-sell">SELL LIQUIDITY: 4736</div>
-  <div id="status">Waiting for price...</div>
+<div class="dashboard">
+  <h3>ICT LIQUIDITY DASHBOARD</h3>
+  <div class="zone buy">BUY LIQUIDITY: 4600 - 4619</div>
+  <div class="zone sell">SELL LIQUIDITY: 4736 - 4755</div>
+  <div class="alert" id="price">Price: --</div>
+  <div class="alert" id="rsi">RSI: --</div>
+  <div class="alert" id="signal">Status: SCANNING...</div>
 </div>
 
 <div id="tvchart"></div>
@@ -26,43 +32,67 @@ body {margin:0; background:#0a0a0a; color:#0ff; font-family:Arial; overflow:hidd
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
 var widget = new TradingView.widget({
-"width": "100%",
-"height": "100%",
-"symbol": "OANDA:XAUUSD",
-"interval": "240",
-"range": "6M",
-"timezone": "Asia/Karachi",
-"theme": "dark",
-"style": "1",
-"locale": "en",
-"toolbar_bg": "#0a0a0a",
-"enable_publishing": false,
-"allow_symbol_change": true,
+"width": "100%", "height": "100%",
+"symbol": "OANDA:XAUUSD", "interval": "240", "range": "12M",
+"timezone": "Asia/Karachi", "theme": "dark", "style": "1",
 "container_id": "tvchart",
+"studies": ["RSI@tv-basicstudies"],
 "overrides": {
-    "paneProperties.background": "#0a0a0a",
-    "paneProperties.vertGridProperties.color": "#222",
-    "paneProperties.horzGridProperties.color": "#222"
+    "paneProperties.background": "#030303",
+    "paneProperties.vertGridProperties.color": "#111",
+    "paneProperties.horzGridProperties.color": "#111"
 }
 });
 
-// ALERT CHECK
+let lastPrice = 0;
+widget.onChartReady(function() {
+  // DRAW ZONES
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4619},
+  {shape: "rectangle", overrides: {backgroundColor: "rgba(0,255,136,0.1)", borderColor: "#00ff88", borderWidth: 2}, text: "BUY LIQUIDITY"});
+
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4755},
+  {shape: "rectangle", overrides: {backgroundColor: "rgba(255,0,68,0.1)", borderColor: "#ff0044", borderWidth: 2}, text: "SELL LIQUIDITY"});
+
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4600},
+  {shape: "horizontal_line", overrides: {linecolor: "#00ff88", linewidth: 2}});
+
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: 4736},
+  {shape: "horizontal_line", overrides: {linecolor: "#ff0044", linewidth: 2}});
+});
+
+// LIQUIDITY SWEEP + RSI SCANNER
 setInterval(function(){
-  var price = widget.chart().getData().lastBarClosePrice;
-  if(price){
-    document.getElementById("status").innerHTML = "Live Price: " + price.toFixed(2);
-    if(price <= 4619){
-      document.getElementById("status").innerHTML = "BUY ALERT! Price hit 4619";
-      document.getElementById("status").style.color = "#0f0";
-      new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
+  try{
+    var data = widget.chart().getData();
+    var price = data.lastBarClosePrice;
+    var rsi = data.studies[0].lastValue; // RSI value
+
+    if(price){
+      lastPrice = price;
+      document.getElementById("price").innerHTML = "Price: " + price.toFixed(2);
+      document.getElementById("rsi").innerHTML = "RSI: " + rsi.toFixed(2);
+
+      // LIQUIDITY SWEEP LOGIC
+      if(price <= 4619 && price >= 4600 && rsi < 30){
+        document.getElementById("signal").innerHTML = "BUY SWEEP + RSI OVERSOLD!";
+        document.getElementById("signal").style.background = "#00ff88";
+        document.getElementById("signal").style.color = "#000";
+        new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg').play();
+      }
+      else if(price >= 4736 && price <= 4755 && rsi > 70){
+        document.getElementById("signal").innerHTML = "SELL SWEEP + RSI OVERBOUGHT!";
+        document.getElementById("signal").style.background = "#ff0044";
+        document.getElementById("signal").style.color = "#fff";
+        new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg').play();
+      }
+      else{
+        document.getElementById("signal").innerHTML = "Status: SCANNING...";
+        document.getElementById("signal").style.background = "#111";
+        document.getElementById("signal").style.color = "#aaa";
+      }
     }
-    if(price >= 4736){
-      document.getElementById("status").innerHTML = "SELL ALERT! Price hit 4736";
-      document.getElementById("status").style.color = "#f00";
-      new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
-    }
-  }
-}, 5000); // har 5 sec me check karega
+  }catch(e){}
+}, 3000);
 </script>
 </body>
 </html>
