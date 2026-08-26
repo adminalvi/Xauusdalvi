@@ -1,34 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ICT MULTI TF PRO - SHAHZAIN</title>
+<title>VIP FUTURE ICT PRO - SHAHZAIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial; overflow:hidden;}
-.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:300px; color:#00ff88; opacity:0.01; z-index:0; font-weight:900;}
+.watermark {position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:320px; color:#00ff88; opacity:0.015; z-index:0; font-weight:900;}
 #tvchart {height:100vh!important; width:100%!important; position:absolute; top:0; left:0; z-index:1;}
-.multipanel {position:fixed; top:10px; right:10px; background:linear-gradient(180deg, #0a0a0a, #000); border:3px solid #00ff88; padding:15px; z-index:9999; border-radius:15px; width:320px; max-height:95vh; overflow-y:auto;}
-.multipanel h2 {margin:0 0 10px 0; color:#00ff88; text-align:center; font-size:15px;}
-.tf {background:#111; padding:8px; margin:5px 0; border-radius:8px; font-size:12px;}
-.tf span {float:right; font-weight:bold;}
-.buy {color:#00ff88;}.sell {color:#ff0044;}.wait {color:#aaa;}
-.bigalert {padding:12px; background:#000; margin-top:10px; border-radius:10px; text-align:center; font-size:16px; font-weight:900; border:2px solid #00ff88;}
+.mainpanel {position:fixed; top:10px; right:10px; background:#0a0a0a; border:3px solid #00ff88; padding:15px; z-index:9999; border-radius:15px; width:340px; max-height:97vh; overflow-y:auto;}
+.mainpanel h2 {margin:0 0 10px 0; color:#00ff88; text-align:center; font-size:14px;}
+.section {background:#111; padding:10px; margin:6px 0; border-radius:8px;}
+.title {font-weight:bold; color:#aaa; font-size:12px; margin-bottom:4px;}
+.value {font-size:15px; font-weight:900;}
+.buy {color:#00ff88;}.sell {color:#ff0044;}.wait {color:#888;}.yellow {color:#ffff00;}
+.grid {display:grid; grid-template-columns:1fr 1fr; gap:5px;}
 </style>
 </head>
 <body>
 <div class="watermark">SHAHZAIN</div>
 
-<div class="multipanel">
-  <h2>🔥 ICT MULTI TF STRUCTURE 🔥</h2>
-  <div class="tf">M1: <span id="m1" class="wait">SCANNING</span></div>
-  <div class="tf">M5: <span id="m5" class="wait">SCANNING</span></div>
-  <div class="tf">M15: <span id="m15" class="wait">SCANNING</span></div>
-  <div class="tf">H1: <span id="h1" class="wait">SCANNING</span></div>
-  <div class="tf">H4: <span id="h4" class="wait">SCANNING</span></div>
-  <div class="tf">D1: <span id="d1" class="wait">SCANNING</span></div>
+<div class="mainpanel">
+  <h2>🔥 VIP FUTURE ICT PRO PANEL 🔥</h2>
 
-  <div class="bigalert" id="structure">STRUCTURE: --</div>
-  <div class="bigalert" id="mainSignal">WAITING FOR CONFLUENCE...</div>
+  <div class="section">
+    <div class="title">MAIN SIGNAL</div>
+    <div class="value" id="mainSignal">SCANNING...</div>
+  </div>
+
+  <div class="section">
+    <div class="title">MULTI TIMEFRAME ANALYSIS</div>
+    <div class="grid">
+      <div>M1: <span id="m1" class="wait">-</span></div>
+      <div>M5: <span id="m5" class="wait">-</span></div>
+      <div>M15: <span id="m15" class="wait">-</span></div>
+      <div>H1: <span id="h1" class="wait">-</span></div>
+      <div>H4: <span id="h4" class="wait">-</span></div>
+      <div>D1: <span id="d1" class="wait">-</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="title">DEMAND / SUPPLY ZONES</div>
+    <div>BUY ZONE: <span class="buy">4600.00 - 4619.00</span></div>
+    <div>SELL ZONE: <span class="sell">4736.00 - 4755.00</span></div>
+    <div>STATUS: <span id="zoneStatus">NEUTRAL</span></div>
+  </div>
+
+  <div class="section">
+    <div class="title">RISK & TARGET</div>
+    <div>ENTRY: <span id="entry">-</span></div>
+    <div>SL: <span id="sl" class="sell">-</span></div>
+    <div>TP1: <span id="tp1" class="buy">-</span></div>
+    <div>TP2: <span id="tp2" class="buy">-</span></div>
+    <div>TP3: <span id="tp3" class="buy">-</span></div>
+  </div>
+
+  <div class="section">
+    <div class="title">M1 / M5 PROJECTION</div>
+    <div>M1 TARGET: <span id="m1proj" class="yellow">-</span></div>
+    <div>M5 TARGET: <span id="m5proj" class="yellow">-</span></div>
+  </div>
+
+  <div class="section">
+    <div class="title">SESSION / NEWS</div>
+    <div>SESSION: <span id="session">-</span></div>
+    <div>VOLATILITY: <span id="vol">-</span></div>
+  </div>
+
 </div>
 
 <div id="tvchart"></div>
@@ -41,74 +79,80 @@ var widget = new TradingView.widget({
 "container_id": "tvchart", "studies": ["RSI@tv-basicstudies"]
 });
 
-let zones = {buyLow: 4600, buyHigh: 4619, sellLow: 4736, sellHigh: 4755};
-let price = 0, rsi = 0;
+let buyZone = {low: 4600, high: 4619};
+let sellZone = {low: 4736, high: 4755};
+let inTrade = false;
 
 widget.onChartReady(function() {
-  // HIGH LIQUIDITY ZONES ON CHART
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.buyHigh},
-  {shape: "rectangle", text: "BUY LIQUIDITY", disableSelection: true,
+  // CHART PE BARE ZONES
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: buyZone.high},
+  {shape: "rectangle", text: "DEMAND ZONE", disableSelection: true,
    overrides: {backgroundColor: "rgba(0,255,136,0.25)", borderColor: "#00ff88", borderWidth: 3}});
 
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.sellHigh},
-  {shape: "rectangle", text: "SELL LIQUIDITY", disableSelection: true,
+  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: sellZone.high},
+  {shape: "rectangle", text: "SUPPLY ZONE", disableSelection: true,
    overrides: {backgroundColor: "rgba(255,0,68,0.25)", borderColor: "#ff0044", borderWidth: 3}});
-
-  // STRUCTURE LINES
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.buyLow},
-  {shape: "horizontal_line", overrides: {linecolor: "#00ff88", linewidth: 3, linestyle: 2}});
-  widget.chart().createShape({time: widget.chart().getVisibleRange().from, price: zones.sellLow},
-  {shape: "horizontal_line", overrides: {linecolor: "#ff0044", linewidth: 3, linestyle: 2}});
 });
 
-// HAR 2 SEC ME SCAN
+// LIVE SCANNER HAR 2 SEC
 setInterval(function(){
   try{
     var data = widget.chart().getData();
-    price = data.lastBarClosePrice;
-    rsi = data.studies[0].lastValue;
-    var tf = widget.chart().getInterval();
+    var price = data.lastBarClosePrice;
+    var rsi = data.studies[0].lastValue;
+    var atr = (data.lastBarHighPrice - data.lastBarLowPrice);
 
     if(price){
-      // MULTI TF SIMULATION - Har TF ke liye alag logic
-      checkTF('m1', price, rsi, 1);
-      checkTF('m5', price, rsi, 2);
-      checkTF('m15', price, rsi, 3);
-      checkTF('h1', price, rsi, 4);
-      checkTF('h4', price, rsi, 5);
-      checkTF('d1', price, rsi, 6);
+      // ENTRY SL TP CALCULATION JESA TUMHARE PINE ME THA
+      let risk = atr * 1.2;
+      document.getElementById("entry").innerHTML = price.toFixed(2);
+      document.getElementById("sl").innerHTML = (price - risk).toFixed(2);
+      document.getElementById("tp1").innerHTML = (price + risk * 1.0).toFixed(2);
+      document.getElementById("tp2").innerHTML = (price + risk * 2.0).toFixed(2);
+      document.getElementById("tp3").innerHTML = (price + risk * 3.0).toFixed(2);
+      document.getElementById("m1proj").innerHTML = (price + atr * 0.8).toFixed(2);
+      document.getElementById("m5proj").innerHTML = (price + atr * 1.8).toFixed(2);
 
-      // STRUCTURE DETECTION
-      if(price > zones.sellHigh) document.getElementById("structure").innerHTML = "STRUCTURE: BULLISH BOS";
-      else if(price < zones.buyLow) document.getElementById("structure").innerHTML = "STRUCTURE: BEARISH BOS";
-      else document.getElementById("structure").innerHTML = "STRUCTURE: RANGE";
+      // ZONE STATUS
+      if(price >= buyZone.low && price <= buyZone.high) document.getElementById("zoneStatus").innerHTML = "IN DEMAND";
+      else if(price >= sellZone.low && price <= sellZone.high) document.getElementById("zoneStatus").innerHTML = "IN SUPPLY";
+      else document.getElementById("zoneStatus").innerHTML = "NEUTRAL";
 
-      // MAIN SIGNAL - 3 CONFLUENCE
-      if(price >= zones.buyLow && price <= zones.buyHigh && rsi < 30){
-        document.getElementById("mainSignal").innerHTML = "HIGH LIQUIDITY BUY SWEEP!";
-        document.getElementById("mainSignal").style.background = "#00ff88";
-        document.getElementById("mainSignal").style.color = "#000";
+      // VIP SIGNAL LOGIC
+      let signal = "WAIT";
+      let cls = "wait";
+      if(price <= buyZone.high && price >= buyZone.low && rsi < 47){
+        signal = "VIP BUY"; cls = "buy";
       }
-      else if(price >= zones.sellLow && price <= zones.sellHigh && rsi > 70){
-        document.getElementById("mainSignal").innerHTML = "HIGH LIQUIDITY SELL SWEEP!";
-        document.getElementById("mainSignal").style.background = "#ff0044";
+      else if(price >= sellZone.low && price <= sellZone.high && rsi > 53){
+        signal = "VIP SELL"; cls = "sell";
       }
-      else{
-        document.getElementById("mainSignal").innerHTML = "WAITING FOR CONFLUENCE...";
-        document.getElementById("mainSignal").style.background = "#000";
-        document.getElementById("mainSignal").style.color = "#aaa";
-      }
+      document.getElementById("mainSignal").innerHTML = signal;
+      document.getElementById("mainSignal").className = "value " + cls;
+
+      // MULTI TF SIMULATION
+      updateTF('m1', price, rsi);
+      updateTF('m5', price, rsi);
+      updateTF('m15', price, rsi);
+      updateTF('h1', price, rsi);
+      updateTF('h4', price, rsi);
+      updateTF('d1', price, rsi);
+
+      // SESSION
+      let hour = new Date().getHours();
+      let session = hour >= 13 && hour < 22? "NEW YORK" : hour >= 7 && hour < 16? "LONDON" : hour >= 0 && hour < 9? "ASIA" : "OFF";
+      document.getElementById("session").innerHTML = session;
+      document.getElementById("vol").innerHTML = atr > 20? "HIGH" : "NORMAL";
     }
   }catch(e){}
 }, 2000);
 
-function checkTF(id, p, r, weight){
-  let status = "WAIT";
-  let cls = "wait";
-  if(p <= zones.buyHigh && p >= zones.buyLow && r < 30){ status = "BUY"; cls = "buy"; }
-  else if(p >= zones.sellLow && p <= zones.sellHigh && r > 70){ status = "SELL"; cls = "sell"; }
-  document.getElementById(id).innerHTML = status;
-  document.getElementById(id).className = cls;
+function updateTF(id, p, r){
+  let s = "WAIT"; let c = "wait";
+  if(p <= buyZone.high && p >= buyZone.low && r < 47){ s = "BUY"; c = "buy"; }
+  else if(p >= sellZone.low && p <= sellZone.high && r > 53){ s = "SELL"; c = "sell"; }
+  document.getElementById(id).innerHTML = s;
+  document.getElementById(id).className = c;
 }
 </script>
 </body>
