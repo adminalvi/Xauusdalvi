@@ -1,76 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>VIP ✅ ALL TF WORKING - SHAHZAIN V9.1</title>
+<title>VIP ✅ ALL TF SWITCHER - SHAHZAIN V11</title>
 <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 body {margin:0; background:#000; color:#fff; font-family:'Segoe UI',Arial;}
+#tfbuttons {display:flex; gap:5px; padding:8px; background:#0a0a0a; border-bottom:2px solid #00ff88;}
+.tfbtn {flex:1; padding:8px; background:#111; border:1px solid #333; color:#fff; border-radius:6px; cursor:pointer; font-weight:900;}
+.tfbtn.active {background:#00ff88; color:#000;}
 #chart {height:50vh; width:100%; background:#000;}
-#vipdash {height:50vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; overflow-y:auto;}
+#vipdash {height:42vh; background:#050505; padding:10px; display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; overflow-y:auto;}
 .vipbox {background:#111; padding:8px; border-radius:8px; border-left:3px solid #00ff88;}
 .t {font-size:9px; color:#888;}.v {font-size:13px; font-weight:900;}
 .buy {color:#00ff88;}.sell {color:#ff0044;}.yellow {color:#ffff00;}
 .header {grid-column: span 7; text-align:center; color:#00ff88; font-weight:900;}
-.tfgrid {grid-column: span 7; display:grid; grid-template-columns: repeat(6, 1fr); gap:5px;}
 </style>
 </head>
 <body>
+
+<div id="tfbuttons">
+  <button class="tfbtn active" onclick="switchTF('m1')">M1</button>
+  <button class="tfbtn" onclick="switchTF('m5')">M5</button>
+  <button class="tfbtn" onclick="switchTF('m15')">M15</button>
+  <button class="tfbtn" onclick="switchTF('h1')">H1</button>
+  <button class="tfbtn" onclick="switchTF('h4')">H4</button>
+  <button class="tfbtn" onclick="switchTF('d1')">D1</button>
+</div>
+
 <div id="chart"></div>
 
 <div id="vipdash">
-  <div class="header">🔥 VIP ✅ ALL TIMEFRAME LIVE 🔥</div>
-
-  <div class="vipbox"><div class="t">Price</div><div class="v" id="price">--</div></div>
-  <div class="vipbox"><div class="t">RSI</div><div class="v" id="rsi">--</div></div>
+  <div class="header">🔥 VIP ✅ REAL TF SWITCHER - CURRENT: <span id="currenttf">M5</span> 🔥</div>
+  <div class="vipbox"><div class="t">Live Price</div><div class="v" id="price">4660.00</div></div>
+  <div class="vipbox"><div class="t">RSI 14</div><div class="v" id="rsi">--</div></div>
   <div class="vipbox"><div class="t">FVG</div><div class="v yellow" id="fvg">--</div></div>
-  <div class="vipbox"><div class="t">Main Signal</div><div class="v" id="signal">WAIT</div></div>
+  <div class="vipbox"><div class="t">Structure</div><div class="v" id="structure">--</div></div>
+  <div class="vipbox"><div class="t">Signal</div><div class="v" id="signal">WAIT</div></div>
+  <div class="vipbox"><div class="t">Candle Close In</div><div class="v" id="ctimer">--</div></div>
   <div class="vipbox"><div class="t">Confluence</div><div class="v" id="con">0/6</div></div>
-  <div class="vipbox"><div class="t">Demand</div><div class="v buy">Auto</div></div>
-  <div class="vipbox"><div class="t">Supply</div><div class="v sell">Auto</div></div>
-
-  <div class="header" style="font-size:12px;">HAR TIMEFRAME KA STRUCTURE</div>
-  <div class="tfgrid">
-    <div class="vipbox"><div class="t">M1</div><div class="v" id="m1s">--</div></div>
-    <div class="vipbox"><div class="t">M5</div><div class="v" id="m5s">--</div></div>
-    <div class="vipbox"><div class="t">M15</div><div class="v" id="m15s">--</div></div>
-    <div class="vipbox"><div class="t">H1</div><div class="v" id="h1s">--</div></div>
-    <div class="vipbox"><div class="t">H4</div><div class="v" id="h4s">--</div></div>
-    <div class="vipbox"><div class="t">D1</div><div class="v" id="d1s">--</div></div>
-  </div>
 </div>
 
 <script>
-window.onload = function() {
-const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-  layout: {backgroundColor: '#000'}, width: window.innerWidth, height: window.innerHeight * 0.5
-});
-const candleSeries = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
-
+let currentTF = 'm5';
+let chart, candleSeries;
 let tfData = {m1:[], m5:[], m15:[], h1:[], h4:[], d1:[]};
 let tfSeconds = {m1:60, m5:300, m15:900, h1:3600, h4:14400, d1:86400};
-let basePrice = 4615;
+let basePrice = 4660; // Exness XAUUSD ke aas paas
+
+window.onload = function() {
+  chart = LightweightCharts.createChart(document.getElementById('chart'), {
+    layout: {backgroundColor: '#000'}, width: window.innerWidth, height: window.innerHeight * 0.5
+  });
+  candleSeries = chart.addCandlestickSeries({upColor: '#00ff88', downColor: '#ff0044'});
+
+  // Sab TF ka data bana lo
+  for(let tf in tfData){
+    tfData[tf] = generateData(tf, 300);
+  }
+  switchTF('m5'); // Default M5
+  startLoop();
+}
+
+function switchTF(tf){
+  currentTF = tf;
+  document.querySelectorAll('.tfbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.tfbtn[onclick="switchTF('${tf}')"]`).classList.add('active');
+  document.getElementById('currenttf').innerHTML = tf.toUpperCase();
+  candleSeries.setData(tfData[tf]);
+}
 
 function generateData(tf, count){
   let data = [];
-  let price = basePrice + (Math.random()-0.5)*50;
+  let price = basePrice + (Math.random()-0.5)*80;
   for(let i=count; i>0; i--){
-    price += (Math.random()-0.5)* (tfSeconds[tf]/60);
+    let change = (Math.random()-0.5)* (tfSeconds[tf]/100);
+    let open = price;
+    price += change;
+    let high = Math.max(open, price) + Math.random()*2;
+    let low = Math.min(open, price) - Math.random()*2;
     data.push({
       time: Math.floor(Date.now()/1000) - i*tfSeconds[tf],
-      open: price, high: price+5, low: price-5, close: price + (Math.random()-0.5)*3
+      open: open, high: high, low: low, close: price
     });
   }
   return data;
 }
 
 function getStructure(data){
-  if(data.length < 5) return "WAIT";
+  if(data.length < 3) return "WAIT";
   let l = data.length;
-  let c1=data[l-1], c2=data[l-2], c3=data[l-3];
-  if(c1.c > c2.h && c2.c > c3.h) return "BOS UP";
-  if(c1.c < c2.l && c2.c < c3.l) return "BOS DOWN";
-  if(c1.h>c2.h && c1.l>c2.l) return "BULLISH";
-  if(c1.h<c2.h && c1.l<c2.l) return "BEARISH";
+  if(data[l-1].close > data[l-2].high) return "BOS UP";
+  if(data[l-1].close < data[l-2].low) return "BOS DOWN";
+  if(data[l-1].high>data[l-2].high && data[l-1].low>data[l-2].low) return "BULLISH";
+  if(data[l-1].high<data[l-2].high && data[l-1].low<data[l-2].low) return "BEARISH";
   return "RANGE";
 }
 
@@ -82,7 +104,6 @@ function getFVG(data){
   return "NONE";
 }
 
-// RSI FIX: Divide by 0 ka masla khatam
 function calcRSI(closes){
   if(closes.length < 15) return 50;
   let gains=0, losses=0;
@@ -91,58 +112,60 @@ function calcRSI(closes){
     if(d>0) gains+=d; else losses-=d;
   }
   if(losses === 0) return 100;
-  let rs = (gains/14)/(losses/14);
-  return 100 - (100/(1+rs));
+  return 100 - (100/(1+(gains/14)/(losses/14))));
 }
 
-for(let tf in tfData){
-  tfData[tf] = generateData(tf, 200);
-}
-candleSeries.setData(tfData['m5']);
+function startLoop(){
+  setInterval(()=>{
+    let now = Math.floor(Date.now()/1000);
+    let confluence = 0;
 
-setInterval(()=>{
-  let confluence = 0;
+    for(let tf in tfData){
+      let last = tfData[tf][tfData[tf].length-1];
 
-  for(let tf in tfData){
-    let last = tfData[tf][tfData[tf].length-1];
-    let newPrice = last.close + (Math.random()-0.5)* (tfSeconds[tf]/100);
+      // ADVANCE CANDLE: Time pura ho to nayi candle
+      if(now >= last.time + tfSeconds[tf]){
+        let newPrice = last.close + (Math.random()-0.5)* (tfSeconds[tf]/80);
+        let open = last.close;
+        tfData[tf].push({
+          time: last.time + tfSeconds[tf],
+          open: open, high: Math.max(open,newPrice)+1, low: Math.min(open,newPrice)-1, close: newPrice
+        });
+      } else {
+        // Candle update
+        last.close += (Math.random()-0.5)*0.5;
+        last.high = Math.max(last.high, last.close);
+        last.low = Math.min(last.low, last.close);
+      }
 
-    // TIME FIX: Duplicate time nahi aayega
-    let newTime = last.time + tfSeconds[tf];
+      // Confluence ke liye sab TF check
+      let s = getStructure(tfData[tf]);
+      if(s.includes("BULL")||s.includes("UP")) confluence++;
+      if(s.includes("BEAR")||s.includes("DOWN")) confluence--;
+    }
 
-    tfData[tf].push({
-      time: newTime,
-      open: newPrice, high: newPrice+2, low: newPrice-2, close: newPrice
-    });
+    // Sirf current TF chart pe update karo
+    let clast = tfData[currentTF][tfData[currentTF].length-1];
+    candleSeries.update(clast);
 
-    let structure = getStructure(tfData[tf]);
-    let closes = tfData[tf].map(x=>x.close);
-    let rsi = calcRSI(closes);
+    // Dashboard update
+    let closes = tfData[currentTF].map(x=>x.close);
+    document.getElementById("price").innerHTML = clast.close.toFixed(2);
+    document.getElementById("rsi").innerHTML = calcRSI(closes).toFixed(2);
+    document.getElementById("fvg").innerHTML = getFVG(tfData[currentTF]);
+    document.getElementById("structure").innerHTML = getStructure(tfData[currentTF]);
+    document.getElementById("con").innerHTML = Math.abs(confluence) + "/6";
 
-    document.getElementById(tf+'s').innerHTML = structure;
-    document.getElementById(tf+'s').className = "v " +
-      (structure.includes("BULL")||structure.includes("UP")? "buy" :
-       structure.includes("BEAR")||structure.includes("DOWN")? "sell" : "");
+    let left = tfSeconds[currentTF] - (now % tfSeconds[currentTF]);
+    document.getElementById("ctimer").innerHTML = Math.floor(left/60) + "m " + left%60 + "s";
 
-    if(structure.includes("BULL")||structure.includes("UP")) confluence++;
-    if(structure.includes("BEAR")||structure.includes("DOWN")) confluence--;
-  }
+    let sig = "WAIT";
+    if(confluence >= 4) sig = "VIP BUY";
+    if(confluence <= -4) sig = "VIP SELL";
+    document.getElementById("signal").innerHTML = sig;
+    document.getElementById("signal").className = "v " + (sig.includes("BUY")? "buy" : sig.includes("SELL")? "sell" : "");
 
-  let m5last = tfData['m5'][tfData['m5'].length-1];
-  candleSeries.update(m5last);
-
-  document.getElementById("price").innerHTML = m5last.close.toFixed(2);
-  document.getElementById("rsi").innerHTML = calcRSI(tfData['m5'].map(x=>x.close)).toFixed(2);
-  document.getElementById("fvg").innerHTML = getFVG(tfData['m5']);
-  document.getElementById("con").innerHTML = Math.abs(confluence) + "/6";
-
-  let sig = "WAIT";
-  if(confluence >= 4) sig = "VIP BUY";
-  if(confluence <= -4) sig = "VIP SELL";
-  document.getElementById("signal").innerHTML = sig;
-  document.getElementById("signal").className = "v " + (sig.includes("BUY")? "buy" : sig.includes("SELL")? "sell" : "");
-
-}, 3000);
+  }, 1000);
 }
 </script>
 </body>
