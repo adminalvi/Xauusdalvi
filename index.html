@@ -24,75 +24,47 @@ canvas{background:#0a0a0a;border-radius:8px}
 </div>
 
 <div class="tfs">
-  <div class="tf-btn active" onclick="selectTF('M1', '1', this)">M1</div>
-  <div class="tf-btn" onclick="selectTF('M5', '5', this)">M5</div>
-  <div class="tf-btn" onclick="selectTF('M15', '15', this)">M15</div>
-  <div class="tf-btn" onclick="selectTF('H1', '60', this)">H1</div>
+  <div class="tf-btn active" onclick="selectTF('M1')">M1</div>
+  <div class="tf-btn" onclick="selectTF('M5')">M5</div>
+  <div class="tf-btn" onclick="selectTF('M15')">M15</div>
+  <div class="tf-btn" onclick="selectTF('H1')">H1</div>
 </div>
 
 <canvas id="chart" height="200"></canvas>
 
 <script>
 const API_KEY = "da7er8pr01qj8fm6jrpgda7er8pr01qj8fm6jrq0";
-const SYMBOL = "OANDA:XAU_USD";
 let currentTF = "M1";
-let currentResolution = "1";
 let chart;
 
 async function getPrice(){
-  try {
-    let res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}&token=${API_KEY}`);
-    let data = await res.json();
-    if (data && data.c) {
-      document.getElementById("price").innerText = "$" + data.c.toFixed(2);
-    }
-  } catch(e) {
-    console.error("Price fetch error:", e);
-  }
+  let res = await fetch(`https://finnhub.io/api/v1/quote?symbol=OANDA:XAU_USD&token=${API_KEY}`);
+  let data = await res.json();
+  document.getElementById("price").innerText = data.c.toFixed(2);
 }
 
-async function getCandles(){
-  try {
-    const to = Math.floor(Date.now() / 1000);
-    const from = to - (50 * 60 * parseInt(currentResolution === '60' ? 60 : currentResolution)); // Last 50 candles
-    
-    let res = await fetch(`https://finnhub.io/api/v1/forex/candle?symbol=${SYMBOL}&resolution=${currentResolution}&from=${from}&to=${to}&token=${API_KEY}`);
-    let data = await res.json();
-    
-    if (data.s === "ok") {
-      let labels = data.t.map(t => new Date(t * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
-      let candleData = data.c.map((close, i) => ({
-        o: data.o[i],
-        h: data.h[i],
-        l: data.l[i],
-        c: close
-      }));
-      return { labels, candleData };
-    }
-  } catch(e) {
-    console.error("Candle fetch error:", e);
-  }
-  return null;
-}
-
-function selectTF(tf, res, btnElement){
+function selectTF(tf){
   currentTF = tf;
-  currentResolution = res;
   document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
-  btnElement.classList.add('active');
-  drawChart();
+  event.target.classList.add('active');
+  drawChart(); // TF بدلتے ہی Candle بھی بدل جائے گی
 }
 
-async function drawChart(){
-  const liveData = await getCandles();
+function drawChart(){
   const ctx = document.getElementById('chart');
-
-  let labels = liveData ? liveData.labels : ['1','2','3','4','5'];
-  let candleData = liveData ? liveData.candleData : [
-    {o:2600, h:2605, l:2598, c:2602},
-    {o:2602, h:2608, l:2601, c:2606}
+  // Demo Data - Real میں یہاں API سے Candle Data آئے گا
+  let labels = ['1','2','3','4','5','6','7','8'];
+  let candleData = [
+    {o:4610,h:4615,l:4608,c:4613},
+    {o:4613,h:4618,l:4611,c:4616},
+    {o:4616,h:4617,l:4610,c:4612},
+    {o:4612,h:4614,l:4609,c:4613},
+    {o:4613,h:4619,l:4612,c:4618},
+    {o:4618,h:4620,l:4615,c:4616},
+    {o:4616,h:4618,l:4613,c:4617},
+    {o:4617,h:4621,l:4616,c:4620}
   ];
-
+  
   if(chart) chart.destroy();
   
   chart = new Chart(ctx, {
@@ -100,28 +72,26 @@ async function drawChart(){
     data: {
       labels: labels,
       datasets: [{
-        label: currentTF + ' Candle Close Price',
-        data: candleData.map(d => d.c),
-        backgroundColor: candleData.map(d => d.c >= d.o ? '#00ff00' : '#ff0000')
+        label: currentTF + ' Candle',
+        data: candleData.map(d=>d.c),
+        backgroundColor: candleData.map(d=>d.c>d.o?'#00ff00':'#ff0000')
       }]
     },
     options: {
-      responsive: true,
-      scales: {
-        y: { grid: { color: '#333' }, ticks: { color: '#fff' } },
-        x: { grid: { color: '#333' }, ticks: { color: '#fff' } }
+      plugins: {
+        annotation: {
+          annotations: {
+            label1: {type: 'label', xValue: 2, yValue: 4618, content: ['FVG'], color: 'yellow'}
+          }
+        }
       }
     }
   });
 }
 
-// Initial Calls
 getPrice();
-drawChart();
-
-// Polling intervals
 setInterval(getPrice, 5000);
-setInterval(drawChart, 15000);
+drawChart();
 </script>
 </body>
 </html>
